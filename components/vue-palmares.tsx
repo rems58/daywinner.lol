@@ -1,14 +1,16 @@
 // Presentation du palmares, sans acces aux donnees : la page reelle lui
 // passe ce que Supabase renvoie, l'apercu lui passe un jeu fictif.
 import Link from "next/link";
-import { formaterMontant } from "@/lib/constantes";
+import { formaterMontant, remplir } from "@/lib/constantes";
+import type { Dictionnaire, CategorieCle } from "@/lib/i18n/dictionnaires/types";
+import type { Locale } from "@/lib/i18n/config";
 import { EnteteInterieure, PastilleFleche, PiedPage, ROUGE } from "@/components/habillage";
 import { LogoProjet } from "@/components/logo-projet";
 import { Reveal } from "@/components/fx";
 import type { Champion } from "@/lib/types";
 
-function formaterDate(iso: string) {
-  return new Date(iso).toLocaleDateString("fr-FR", {
+function formaterDate(iso: string, locale: Locale) {
+  return new Date(iso).toLocaleDateString(locale, {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -16,11 +18,15 @@ function formaterDate(iso: string) {
 }
 
 export function VuePalmares({
+  d,
+  locale,
   champions,
   cumulCents,
   nbMises,
   basePath = "",
 }: {
+  d: Dictionnaire;
+  locale: Locale;
   champions: Champion[];
   cumulCents: number;
   nbMises: number;
@@ -28,17 +34,19 @@ export function VuePalmares({
   basePath?: string;
 }) {
   const chiffres = [
-    { valeur: formaterMontant(cumulCents), libelle: "Encaissé depuis le lancement" },
-    { valeur: String(champions.length), libelle: "Manches jouées" },
-    { valeur: String(nbMises), libelle: "Mises reçues" },
+    { valeur: formaterMontant(cumulCents, locale), libelle: d.palmares.encaisse },
+    { valeur: String(champions.length), libelle: d.palmares.manchesJouees },
+    { valeur: String(nbMises), libelle: d.palmares.misesRecues },
   ];
 
   return (
     <div className="flex flex-1 flex-col">
       <EnteteInterieure
-        oeilDeBoeuf="Le palmarès"
-        titre="Un champion par jour, pour toujours"
-        meta="Le classement repart de zéro chaque manche, mais la victoire, elle, reste."
+        d={d}
+        locale={locale}
+        oeilDeBoeuf={d.palmares.oeil}
+        titre={d.palmares.titre}
+        meta={d.palmares.meta}
       />
 
       <main className="flex-1 bg-white">
@@ -63,21 +71,20 @@ export function VuePalmares({
               <Reveal>
                 <div className="border-t-2 border-zinc-950 bg-zinc-50 px-6 py-14 text-center">
                   <p className="font-mono text-[11px] font-medium tracking-[0.25em] text-zinc-500 uppercase">
-                    Palmarès vierge
+                    {d.palmares.videOeil}
                   </p>
                   <p className="mx-auto mt-4 max-w-[46ch] text-xl font-bold tracking-tight text-balance sm:text-2xl">
-                    Aucune manche clôturée pour l&apos;instant.
+                    {d.palmares.videTitre}
                   </p>
                   <p className="mx-auto mt-3 max-w-[52ch] text-[15px] leading-relaxed text-zinc-600">
-                    Le premier champion entrera ici à la fin de la journée en
-                    cours. Ça peut être toi.
+                    {d.palmares.videTexte}
                   </p>
                   <Link
                     href={`${basePath}/#miser`}
                     style={{ backgroundColor: ROUGE }}
                     className="mt-7 inline-block rounded-sm px-7 py-3.5 text-[15px] font-bold text-white transition-all duration-300 hover:brightness-110 active:scale-[0.98]"
                   >
-                    Prendre la première place
+                    {d.palmares.videCta}
                   </Link>
                 </div>
               </Reveal>
@@ -95,10 +102,10 @@ export function VuePalmares({
                             className="font-mono text-[11px] font-medium tracking-[0.25em] uppercase"
                             style={{ color: ROUGE }}
                           >
-                            Jour #{champion.numero}
+                            {remplir(d.jour.jourNumero, { n: champion.numero })}
                           </p>
                           <p className="font-mono text-[12px] text-zinc-500">
-                            {formaterDate(champion.closed_at)}
+                            {formaterDate(champion.closed_at, locale)}
                           </p>
                         </div>
                         <div className="mt-3 flex items-center gap-4">
@@ -113,11 +120,11 @@ export function VuePalmares({
                               <PastilleFleche sombre />
                             </p>
                             <p className="mt-1 text-[15px] text-zinc-600">
-                              Remporté pour{" "}
+                              {d.palmares.remportePour}{" "}
                               <span className="font-bold text-zinc-950 tabular-nums">
-                                {formaterMontant(champion.amount_cents)}
+                                {formaterMontant(champion.amount_cents, locale)}
                               </span>{" "}
-                              · {champion.category}
+                              · {d.categories[champion.category as CategorieCle] ?? champion.category}
                             </p>
                           </div>
                         </div>
@@ -131,7 +138,7 @@ export function VuePalmares({
         </div>
       </main>
 
-      <PiedPage />
+      <PiedPage d={d} />
     </div>
   );
 }

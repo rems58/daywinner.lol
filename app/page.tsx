@@ -1,34 +1,14 @@
 import { creerClientPublic } from "@/lib/supabase/server";
+import { getDictionnaire, getLocale } from "@/lib/i18n/server";
+import { MISE_MIN_CENTS, formaterMontant, remplir } from "@/lib/constantes";
 import { TableauDeBord } from "@/components/tableau-de-bord";
 import { Navigation, PiedPage, TitreSection, ROUGE } from "@/components/habillage";
 import { Reveal } from "@/components/fx";
 import type { Manche, Entree } from "@/lib/types";
 
-const ETAPES = [
-  {
-    titre: "Le tableau s'ouvre à 1 €",
-    corps:
-      "Chaque manche démarre vierge. La toute première mise du jour coûte 1 € : les lève-tôt tiennent la tête pour presque rien.",
-  },
-  {
-    titre: "Les mises se surenchérissent",
-    corps:
-      "Le classement est trié par montant. Payer plus que le #1 actuel, c'est prendre sa place, en direct, sous les yeux de tout le monde.",
-  },
-  {
-    titre: "Les deux dernières minutes comptent double",
-    corps:
-      "Une mise dans la fenêtre finale prolonge la manche de deux minutes. Impossible de rafler le titre à la dernière seconde.",
-  },
-  {
-    titre: "À la clôture, tout repart de zéro",
-    corps:
-      "Le champion entre au palmarès avec son trophée partageable. Le classement se vide, et une nouvelle journée s'ouvre à 1 €.",
-  },
-];
-
 export default async function Accueil({ searchParams }: PageProps<"/">) {
   const params = await searchParams;
+  const [d, locale] = await Promise.all([getDictionnaire(), getLocale()]);
   const supabase = creerClientPublic();
 
   const { data: manche } = await supabase
@@ -53,30 +33,32 @@ export default async function Accueil({ searchParams }: PageProps<"/">) {
                 : { borderColor: "#3f3f46", backgroundColor: "#fafafa", color: "#3f3f46" }
             }
           >
-            {params.merci
-              ? "Paiement reçu, ta mise est en ligne. 🎉"
-              : "Paiement annulé, aucune mise enregistrée."}
+            {params.merci ? d.accueil.merci : d.accueil.annule}
           </p>
         </div>
       )}
 
       {manche ? (
-        <TableauDeBord rondeInitiale={manche} misesInitiales={entries ?? []} />
+        <TableauDeBord
+          d={d}
+          locale={locale}
+          rondeInitiale={manche}
+          misesInitiales={entries ?? []}
+        />
       ) : (
         <section className="relative flex min-h-[60dvh] flex-col bg-encre text-white">
           <div className="cosmos-nebula absolute inset-0" aria-hidden />
           <div className="cosmos-stars absolute inset-0" aria-hidden />
-          <Navigation />
+          <Navigation d={d} locale={locale} />
           <div className="relative mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-6 py-24">
             <p className="font-mono text-[11px] font-medium tracking-[0.25em] text-white/60 uppercase">
-              Entracte
+              {d.accueil.entracteOeil}
             </p>
             <h1 className="mt-3 max-w-3xl text-4xl font-bold tracking-tight text-balance sm:text-6xl">
-              Aucune manche en cours.
+              {d.accueil.entracteTitre}
             </h1>
             <p className="mt-6 max-w-xl text-lg text-white/70">
-              La prochaine journée s&apos;ouvre dans un instant. Recharge la
-              page pour prendre la première place à 1 €.
+              {d.accueil.entracteTexte}
             </p>
           </div>
         </section>
@@ -86,19 +68,23 @@ export default async function Accueil({ searchParams }: PageProps<"/">) {
       <section id="comment" className="scroll-mt-10 border-t border-zinc-200 bg-white">
         <div className="mx-auto w-full max-w-7xl px-6 py-24 sm:py-28">
           <TitreSection
-            oeilDeBoeuf="Le fonctionnement"
-            titre="Une journée, un champion"
-            lienLabel="Les règles"
+            oeilDeBoeuf={d.accueil.commentOeil}
+            titre={d.accueil.commentTitre}
+            lienLabel={d.accueil.commentLien}
             lienHref="/regles"
           />
           <ol className="mt-14 grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
-            {ETAPES.map((etape, i) => (
+            {d.accueil.etapes.map((etape, i) => (
               <Reveal key={etape.titre} delay={0.1 + i * 0.1}>
                 <li className="border-t-2 border-zinc-950 pt-5">
                   <span className="font-mono text-sm font-semibold" style={{ color: ROUGE }}>
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <h3 className="mt-2 text-lg font-bold tracking-tight">{etape.titre}</h3>
+                  <h3 className="mt-2 text-lg font-bold tracking-tight">
+                    {remplir(etape.titre, {
+                      montant: formaterMontant(MISE_MIN_CENTS, locale),
+                    })}
+                  </h3>
                   <p className="mt-2 text-[15px] leading-relaxed text-zinc-600">
                     {etape.corps}
                   </p>
@@ -109,7 +95,7 @@ export default async function Accueil({ searchParams }: PageProps<"/">) {
         </div>
       </section>
 
-      <PiedPage />
+      <PiedPage d={d} />
     </div>
   );
 }

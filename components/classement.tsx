@@ -5,20 +5,35 @@ import Link from "next/link";
 import { Reveal } from "@/components/fx";
 import { PastilleFleche, ROUGE } from "@/components/habillage";
 import { LogoProjet } from "@/components/logo-projet";
-import { formaterMontant } from "@/lib/constantes";
+import { MISE_MIN_CENTS, formaterMontant, remplir } from "@/lib/constantes";
+import type { Dictionnaire, CategorieCle } from "@/lib/i18n/dictionnaires/types";
+import type { Locale } from "@/lib/i18n/config";
 import type { Entree } from "@/lib/types";
 
 const PAR_PAGE = 10;
+
+/**
+ * La base stocke une cle de categorie. Les lignes anterieures a l'i18n
+ * stockent un libelle francais : on l'affiche tel quel plutot que de laisser
+ * un trou.
+ */
+function libelleCategorie(d: Dictionnaire, valeur: string) {
+  return d.categories[valeur as CategorieCle] ?? valeur;
+}
 
 function hote(url: string) {
   return url.replace(/^https?:\/\//, "").replace(/\/+$/, "");
 }
 
 export function Classement({
+  d,
+  locale,
   entries,
   numeroManche,
   basePath = "",
 }: {
+  d: Dictionnaire;
+  locale: Locale;
   entries: Entree[];
   numeroManche: number;
   /** Prefixe des liens internes : vide en production, "/apercu" en demo. */
@@ -37,22 +52,20 @@ export function Classement({
       <Reveal>
         <div className="border-t-2 border-zinc-950 bg-zinc-50 px-6 py-14 text-center">
           <p className="font-mono text-[11px] font-medium tracking-[0.25em] text-zinc-500 uppercase">
-            Tableau vierge
+            {d.classement.videOeil}
           </p>
           <p className="mx-auto mt-4 max-w-[46ch] text-xl font-bold tracking-tight text-balance sm:text-2xl">
-            Personne n&apos;a encore misé sur le Jour #{numeroManche}.
+            {remplir(d.classement.videTitre, { n: numeroManche })}
           </p>
           <p className="mx-auto mt-3 max-w-[52ch] text-[15px] leading-relaxed text-zinc-600">
-            La première mise de la journée démarre à 1 €. Celui qui se lève tôt
-            peut tenir la première place pendant des heures pour le prix d&apos;un
-            café.
+            {d.classement.videTexte}
           </p>
           <a
             href="#miser"
             style={{ backgroundColor: ROUGE }}
             className="mt-7 inline-block rounded-sm px-7 py-3.5 text-[15px] font-bold text-white transition-all duration-300 hover:brightness-110 active:scale-[0.98]"
           >
-            Ouvrir la journée pour 1 €
+            {remplir(d.classement.videCta, { montant: formaterMontant(MISE_MIN_CENTS, locale) })}
           </a>
         </div>
       </Reveal>
@@ -88,7 +101,7 @@ export function Classement({
                   className="font-mono text-[11px] font-medium tracking-[0.25em] uppercase"
                   style={{ color: ROUGE }}
                 >
-                  Première place · Jour #{numeroManche}
+                  {remplir(d.classement.premierePlace, { n: numeroManche })}
                 </p>
                 <p className="mt-2 flex items-center gap-2.5 text-2xl font-bold tracking-tight sm:mt-3 sm:gap-3 sm:text-4xl">
                   <span className="truncate">{premier.project_name}</span>
@@ -100,12 +113,12 @@ export function Classement({
                   </p>
                 )}
                 <p className="mt-2 truncate font-mono text-[11px] text-zinc-500 sm:mt-3 sm:text-[12px]">
-                  {hote(premier.project_url)} · {premier.category}
+                  {hote(premier.project_url)} · {libelleCategorie(d, premier.category)}
                 </p>
               </div>
             </div>
             <p className="text-3xl leading-none font-bold tracking-tight tabular-nums sm:text-5xl lg:text-6xl">
-              {formaterMontant(premier.amount_cents)}
+              {formaterMontant(premier.amount_cents, locale)}
             </p>
           </div>
         </a>
@@ -135,11 +148,11 @@ export function Classement({
                       {entree.project_name}
                     </span>
                     <span className="mt-0.5 block truncate font-mono text-[12px] text-zinc-500">
-                      {entree.category}
+                      {libelleCategorie(d, entree.category)}
                     </span>
                   </span>
                   <span className="shrink-0 text-lg font-bold tracking-tight tabular-nums">
-                    {formaterMontant(entree.amount_cents)}
+                    {formaterMontant(entree.amount_cents, locale)}
                   </span>
                 </a>
               </li>
@@ -154,14 +167,14 @@ export function Classement({
             href={`${basePath}/jour/${numeroManche}`}
             className="group inline-flex items-center gap-2.5 text-lg font-bold tracking-tight"
           >
-            Voir le classement complet
+            {d.classement.voirComplet}
             <PastilleFleche sombre />
           </Link>
 
           {suivants > PAR_PAGE && (
             <div className="flex items-center gap-6">
               <span className="font-mono text-[11px] font-medium tracking-[0.2em] text-zinc-500 uppercase">
-                Page {page + 1} / {nbPages}
+                {remplir(d.classement.page, { page: page + 1, total: nbPages })}
               </span>
               <div className="flex items-center gap-3">
                 <button
@@ -170,7 +183,7 @@ export function Classement({
                   disabled={page === 0}
                   className="rounded-sm border border-zinc-300 px-4 py-2 text-sm font-semibold transition-colors duration-300 hover:border-zinc-950 hover:bg-zinc-100 disabled:pointer-events-none disabled:opacity-40"
                 >
-                  Page précédente
+                  {d.classement.precedente}
                 </button>
                 <button
                   type="button"
@@ -178,7 +191,7 @@ export function Classement({
                   disabled={page >= nbPages - 1}
                   className="rounded-sm border border-zinc-300 px-4 py-2 text-sm font-semibold transition-colors duration-300 hover:border-zinc-950 hover:bg-zinc-100 disabled:pointer-events-none disabled:opacity-40"
                 >
-                  Page suivante
+                  {d.classement.suivante}
                 </button>
               </div>
             </div>

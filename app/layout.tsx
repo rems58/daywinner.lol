@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getDictionnaire, getLocale } from "@/lib/i18n/server";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -12,19 +13,22 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://daywinner.lol"
-  ),
-  title: "daywinner.lol : la première place, pour la journée",
-  description:
-    "Paie pour prendre la première place du jour. Le classement repart de zéro toutes les 24h, avec règle anti-snipe : impossible de voler la victoire dans les 2 dernières minutes.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const d = await getDictionnaire();
+  return {
+    metadataBase: new URL(
+      process.env.NEXT_PUBLIC_SITE_URL ?? "https://daywinner.lol"
+    ),
+    title: d.meta.titre,
+    description: d.meta.description,
+  };
+}
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const locale = await getLocale();
   return (
     <html
-      lang="fr"
+      lang={locale}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-white text-zinc-950">

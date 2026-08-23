@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createHash, randomUUID } from "crypto";
 import { creerClientService } from "@/lib/supabase/server";
+import { getDictionnaire } from "@/lib/i18n/server";
 import { LOGO_POIDS_MAX, LOGO_TYPES } from "@/lib/constantes";
 
 const EXTENSIONS: Record<string, string> = {
@@ -32,20 +33,21 @@ function hacherIp(request: Request) {
 // autorise, poids plafonne, nom de fichier genere ici (jamais celui fourni,
 // qui pourrait viser un autre chemin du depot).
 export async function POST(request: Request) {
+  const d = await getDictionnaire();
   const donnees = await request.formData().catch(() => null);
   const fichier = donnees?.get("fichier");
 
   if (!(fichier instanceof File)) {
-    return NextResponse.json({ erreur: "Aucun fichier reçu." }, { status: 400 });
+    return NextResponse.json({ erreur: d.api.aucunFichier }, { status: 400 });
   }
   if (!LOGO_TYPES.includes(fichier.type as (typeof LOGO_TYPES)[number])) {
     return NextResponse.json(
-      { erreur: "Format accepté : PNG, JPEG, WebP, SVG ou GIF." },
+      { erreur: d.formulaire.erreurFormat },
       { status: 400 }
     );
   }
   if (fichier.size > LOGO_POIDS_MAX) {
-    return NextResponse.json({ erreur: "Image trop lourde (2 Mo maximum)." }, { status: 400 });
+    return NextResponse.json({ erreur: d.formulaire.erreurPoids }, { status: 400 });
   }
 
   const supabase = creerClientService();
@@ -60,7 +62,7 @@ export async function POST(request: Request) {
 
   if ((count ?? 0) >= ENVOIS_MAX_PAR_HEURE) {
     return NextResponse.json(
-      { erreur: "Trop d'envois d'images. Réessaie dans une heure." },
+      { erreur: d.api.tropEnvois },
       { status: 429 }
     );
   }
@@ -73,7 +75,7 @@ export async function POST(request: Request) {
 
   if (error) {
     console.error("Échec téléversement logo", error);
-    return NextResponse.json({ erreur: "Le téléversement a échoué." }, { status: 500 });
+    return NextResponse.json({ erreur: d.formulaire.erreurEnvoiLogo }, { status: 500 });
   }
 
   await supabase.from("logo_uploads").insert({ ip_hash: ipHash, chemin });

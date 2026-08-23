@@ -4,13 +4,24 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { Reveal } from "@/components/fx";
+import { SelecteurLangue } from "@/components/selecteur-langue";
+import type { Dictionnaire } from "@/lib/i18n/dictionnaires/types";
+import type { Locale } from "@/lib/i18n/config";
 import { cn } from "@/lib/utils";
 
 export const ROUGE = "#e8442e";
 
 // `ton` ne joue que sur les couleurs : la nav reste dans le flux, les
 // bandeaux qui l'accueillent gerent eux-memes leur hauteur.
-export function Navigation({ ton = "sombre" }: { ton?: "sombre" | "clair" }) {
+export function Navigation({
+  d,
+  locale,
+  ton = "sombre",
+}: {
+  d: Dictionnaire;
+  locale: Locale;
+  ton?: "sombre" | "clair";
+}) {
   const sombre = ton === "sombre";
   return (
     <header className="relative z-40">
@@ -33,7 +44,7 @@ export function Navigation({ ton = "sombre" }: { ton?: "sombre" | "clair" }) {
               sombre ? "hover:text-white" : "hover:text-zinc-950"
             )}
           >
-            Palmarès
+            {d.nav.palmares}
           </Link>
           <Link
             href="/regles"
@@ -42,7 +53,7 @@ export function Navigation({ ton = "sombre" }: { ton?: "sombre" | "clair" }) {
               sombre ? "hover:text-white" : "hover:text-zinc-950"
             )}
           >
-            Règles
+            {d.nav.regles}
           </Link>
         </nav>
         <div className="sm:text-center">
@@ -50,7 +61,7 @@ export function Navigation({ ton = "sombre" }: { ton?: "sombre" | "clair" }) {
             daywinner<span style={{ color: ROUGE }}>.lol</span>
           </Link>
         </div>
-        <div className="flex justify-end">
+        <div className="flex items-center justify-end gap-2">
           <Link
             href="/#miser"
             className={cn(
@@ -60,8 +71,9 @@ export function Navigation({ ton = "sombre" }: { ton?: "sombre" | "clair" }) {
                 : "border-zinc-300 text-zinc-950 hover:border-zinc-950 hover:bg-zinc-100"
             )}
           >
-            Miser
+            {d.nav.miser}
           </Link>
+          <SelecteurLangue courante={locale} libelle={d.nav.langue} ton={ton} />
         </div>
       </div>
     </header>
@@ -128,10 +140,14 @@ export function TitreSection({
 
 /** Bandeau sombre en tete des pages interieures (palmares, regles, jour). */
 export function EnteteInterieure({
+  d,
+  locale,
   oeilDeBoeuf,
   titre,
   meta,
 }: {
+  d: Dictionnaire;
+  locale: Locale;
   oeilDeBoeuf: string;
   titre: string;
   meta?: ReactNode;
@@ -141,7 +157,7 @@ export function EnteteInterieure({
       <div className="cosmos-nebula absolute inset-0" aria-hidden />
       <div className="cosmos-stars absolute inset-0" aria-hidden />
       <div className="relative">
-        <Navigation />
+        <Navigation d={d} locale={locale} />
         <div className="mx-auto w-full max-w-7xl px-6 pt-10 pb-16">
           <p className="font-mono text-[11px] font-medium tracking-[0.25em] text-white/60 uppercase">
             {oeilDeBoeuf}
@@ -156,7 +172,7 @@ export function EnteteInterieure({
   );
 }
 
-export function PiedPage() {
+export function PiedPage({ d }: { d: Dictionnaire }) {
   return (
     <footer className="bg-encre text-white">
       <div className="mx-auto flex w-full max-w-7xl flex-col justify-between gap-6 px-6 py-14 sm:flex-row sm:items-end">
@@ -164,17 +180,14 @@ export function PiedPage() {
           <span className="text-2xl font-bold tracking-tight">
             daywinner<span style={{ color: ROUGE }}>.lol</span>
           </span>
-          <p className="mt-2 max-w-[40ch] text-sm text-white/60">
-            La première place s&apos;achète, elle ne se mérite pas. Et demain,
-            tout repart de zéro.
-          </p>
+          <p className="mt-2 max-w-[40ch] text-sm text-white/60">{d.pied.accroche}</p>
         </div>
         <div className="flex gap-6 text-sm text-white/50">
           <Link href="/palmares" className="transition-colors hover:text-white">
-            Palmarès
+            {d.nav.palmares}
           </Link>
           <Link href="/regles" className="transition-colors hover:text-white">
-            Règles
+            {d.nav.regles}
           </Link>
         </div>
       </div>

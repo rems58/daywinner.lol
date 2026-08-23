@@ -2,13 +2,16 @@ import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { stripe } from "@/lib/stripe";
 import { creerClientPublic } from "@/lib/supabase/server";
+import { getDictionnaire, getLocale } from "@/lib/i18n/server";
 import {
   CATEGORIES,
   MISE_MIN_CENTS,
   formaterMontant,
   logoUrlValide,
   normaliserUrl,
+  remplir,
 } from "@/lib/constantes";
+import type { CategorieCle } from "@/lib/i18n/dictionnaires/types";
 
 /**
  * `managed_payments` est plus recent que les types du SDK (22.5.0), d'ou
@@ -23,9 +26,12 @@ type ParamsSession = Stripe.Checkout.SessionCreateParams & {
 };
 
 export async function POST(request: Request) {
+  // Les erreurs remontent telles quelles dans le formulaire : elles doivent
+  // parler la langue du visiteur, pas celle du serveur.
+  const [d, locale] = await Promise.all([getDictionnaire(), getLocale()]);
   const body = await request.json().catch(() => null);
   if (!body) {
-    return NextResponse.json({ erreur: "Corps de requête invalide." }, { status: 400 });
+    return NextResponse.json({ erreur: d.api.requeteInvalide }, { status: 400 });
   }
 
   const project_name = String(body.project_name ?? "").trim().slice(0, 80);
@@ -36,20 +42,20 @@ export async function POST(request: Request) {
   const amount_cents = Math.round(Number(body.amount_cents));
 
   if (!project_name || !project_url) {
-    return NextResponse.json({ erreur: "Nom et URL du projet requis." }, { status: 400 });
+    return NextResponse.json({ erreur: d.api.champsRequis }, { status: 400 });
   }
-  if (!CATEGORIES.includes(category as (typeof CATEGORIES)[number])) {
-    return NextResponse.json({ erreur: "Catégorie invalide." }, { status: 400 });
+  if (!CATEGORIES.includes(category as CategorieCle)) {
+    return NextResponse.json({ erreur: d.api.categorieInvalide }, { status: 400 });
   }
   if (!Number.isFinite(amount_cents) || amount_cents < MISE_MIN_CENTS) {
     return NextResponse.json(
-      { erreur: `Mise minimale : ${formaterMontant(MISE_MIN_CENTS)}.` },
+      { erreur: remplir(d.api.miseMinimale, { montant: formaterMontant(MISE_MIN_CENTS, locale) }) },
       { status: 400 }
     );
   }
   if (logo_url && !logoUrlValide(logo_url)) {
     return NextResponse.json(
-      { erreur: "Le lien du logo doit être une URL https." },
+      { erreur: d.api.logoHttps },
       { status: 400 }
     );
   }
@@ -65,7 +71,7 @@ export async function POST(request: Request) {
 
   if (!manche) {
     return NextResponse.json(
-      { erreur: "Aucune manche active pour le moment, réessaie dans un instant." },
+      { erreur: d.api.aucuneManche },
       { status: 409 }
     );
   }
@@ -83,9 +89,9 @@ export async function POST(request: Request) {
   if (miseExistante && amount_cents <= miseExistante.amount_cents) {
     return NextResponse.json(
       {
-        erreur: `Ta mise actuelle sur ce projet est déjà de ${formaterMontant(
-          miseExistante.amount_cents
-        )}. Propose plus pour surenchérir.`,
+        erreur: remplir(d.api.dejaMise, {
+          montant: formaterMontant(miseExistante.amount_cents, locale),
+        }),
       },
       { status: 400 }
     );
@@ -136,7 +142,7 @@ export async function POST(request: Request) {
   } catch (erreur) {
     console.error("Échec création session Stripe", erreur);
     return NextResponse.json(
-      { erreur: "Le paiement n'a pas pu être lancé. Réessaie dans un instant." },
+      { erreur: d.api.paiementImpossible },
       { status: 502 }
     );
   }

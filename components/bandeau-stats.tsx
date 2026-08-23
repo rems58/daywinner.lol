@@ -3,10 +3,13 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { creerClientNavigateur } from "@/lib/supabase/client";
+import { remplir } from "@/lib/constantes";
+import type { Dictionnaire } from "@/lib/i18n/dictionnaires/types";
+import type { Locale } from "@/lib/i18n/config";
 
 const CLE_SESSION = "daywinner-visite-comptee";
 
-export function BandeauStats() {
+export function BandeauStats({ d, locale }: { d: Dictionnaire; locale: Locale }) {
   const [enLigne, setEnLigne] = useState<number | null>(null);
   const [visiteurs, setVisiteurs] = useState<number | null>(null);
 
@@ -53,7 +56,7 @@ export function BandeauStats() {
   }, []);
 
   const nombre = (valeur: number | null) =>
-    valeur === null ? "…" : new Intl.NumberFormat("fr-FR").format(valeur);
+    valeur === null ? "…" : new Intl.NumberFormat(locale).format(valeur);
 
   return (
     <div className="flex justify-center px-6 pb-8">
@@ -67,7 +70,7 @@ export function BandeauStats() {
             <span className="relative inline-flex size-2 rounded-full bg-emerald-400" />
           </span>
           <span className="font-semibold text-white tabular-nums">
-            {nombre(enLigne)} en ligne
+            {remplir(d.stats.enLigne, { n: nombre(enLigne) })}
           </span>
         </span>
         <span className="text-white/25">·</span>
@@ -75,11 +78,11 @@ export function BandeauStats() {
           <span className="font-semibold text-white tabular-nums">
             {nombre(visiteurs)}
           </span>{" "}
-          visiteurs depuis le lancement
+          {d.stats.visiteurs}
         </span>
         <span className="hidden text-white/25 sm:inline">·</span>
         <span className="font-semibold text-white underline-offset-4 group-hover:underline">
-          voir les stats →
+          {d.stats.voirStats}
         </span>
       </Link>
     </div>

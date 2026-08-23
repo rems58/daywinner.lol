@@ -8,25 +8,32 @@ export const FENETRE_ANTI_SNIPE_MS = 2 * 60 * 1000;
 export const PROLONGATION_ANTI_SNIPE_MS = 2 * 60 * 1000;
 export const DUREE_MANCHE_MS = 24 * 60 * 60 * 1000;
 
-export const CATEGORIES = [
-  "IA & Agents",
-  "SEO & Visibilite",
-  "Outils dev",
-  "Productivite",
-  "Marketing & Growth",
-  "Design & Creatif",
-  "Crypto & Web3",
-  "Jeux & Divertissement",
-  "E-commerce",
-  "Autre",
-] as const;
+// Les categories vivent desormais dans le dictionnaire : la base stocke une
+// cle stable, l'affichage la traduit. Reexporte ici pour que les modules qui
+// validaient deja CATEGORIES n'aient pas a changer d'import.
+export { CATEGORIES, type CategorieCle } from "@/lib/i18n/dictionnaires/types";
 
-export function formaterMontant(cents: number) {
-  return new Intl.NumberFormat("fr-FR", {
+/**
+ * Montant formate dans la langue du visiteur. La devise reste l'euro quelle
+ * que soit la langue : c'est ce qui est reellement debite, pas une
+ * conversion. Seule la mise en forme change (1 234,50 € contre €1,234.50).
+ */
+export function formaterMontant(cents: number, locale = "fr") {
+  return new Intl.NumberFormat(locale, {
     style: "currency",
     currency: "EUR",
     maximumFractionDigits: cents % 100 === 0 ? 0 : 2,
   }).format(cents / 100);
+}
+
+/** Remplace les {jetons} d'un texte du dictionnaire par leurs valeurs. */
+export function remplir(
+  gabarit: string,
+  valeurs: Record<string, string | number>
+) {
+  return gabarit.replace(/\{(\w+)\}/g, (entier, cle) =>
+    cle in valeurs ? String(valeurs[cle]) : entier
+  );
 }
 
 export function normaliserUrl(url: string) {

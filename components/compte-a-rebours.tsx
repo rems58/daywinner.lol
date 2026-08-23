@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { FENETRE_ANTI_SNIPE_MS } from "@/lib/constantes";
+import type { Dictionnaire } from "@/lib/i18n/dictionnaires/types";
 import { cn } from "@/lib/utils";
 
 function decouper(ms: number) {
@@ -14,10 +15,12 @@ function decouper(ms: number) {
 }
 
 export function CompteARebours({
+  d,
   finISO,
   ton = "sombre",
   taille = "grand",
 }: {
+  d: Dictionnaire;
   finISO: string;
   ton?: "sombre" | "clair";
   taille?: "grand" | "moyen";
@@ -48,7 +51,7 @@ export function CompteARebours({
 
   if (reste !== null && reste <= 0) {
     return (
-      <p className={cn("font-bold tracking-tight", tailleChiffres)}>Clôture en cours…</p>
+      <p className={cn("font-bold tracking-tight", tailleChiffres)}>{d.chrono.clotureEnCours}</p>
     );
   }
 
@@ -57,9 +60,9 @@ export function CompteARebours({
   const vide = reste === null;
 
   const blocs: Array<[string, string]> = [
-    [vide ? "--" : pad(heures), "heures"],
-    [vide ? "--" : pad(minutes), "minutes"],
-    [vide ? "--" : pad(secondes), "secondes"],
+    [vide ? "--" : pad(heures), d.chrono.heures],
+    [vide ? "--" : pad(minutes), d.chrono.minutes],
+    [vide ? "--" : pad(secondes), d.chrono.secondes],
   ];
 
   return (

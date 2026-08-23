@@ -1,6 +1,8 @@
 // Presentation du classement archive d'une manche, sans acces aux donnees.
 import Link from "next/link";
-import { formaterMontant } from "@/lib/constantes";
+import { formaterMontant, remplir } from "@/lib/constantes";
+import type { Dictionnaire, CategorieCle } from "@/lib/i18n/dictionnaires/types";
+import type { Locale } from "@/lib/i18n/config";
 import { EnteteInterieure, PastilleFleche, PiedPage, ROUGE } from "@/components/habillage";
 import { LogoProjet } from "@/components/logo-projet";
 import { Reveal } from "@/components/fx";
@@ -11,10 +13,14 @@ function hote(url: string) {
 }
 
 export function VueJour({
+  d,
+  locale,
   manche,
   entries,
   basePath = "",
 }: {
+  d: Dictionnaire;
+  locale: Locale;
   manche: Manche;
   entries: Entree[];
   /** Prefixe des liens internes : vide en production, "/apercu" en demo. */
@@ -26,16 +32,22 @@ export function VueJour({
   return (
     <div className="flex flex-1 flex-col">
       <EnteteInterieure
-        oeilDeBoeuf={enCours ? "Manche en cours" : "Manche clôturée"}
-        titre={`Jour #${manche.numero}`}
+        d={d}
+        locale={locale}
+        oeilDeBoeuf={enCours ? d.jour.enCoursOeil : d.jour.clotureeOeil}
+        titre={remplir(d.jour.jourNumero, { n: manche.numero })}
         meta={
           enCours
-            ? "Le classement peut encore bouger jusqu'à la clôture."
-            : `Clôturé le ${new Date(manche.closed_at!).toLocaleDateString("fr-FR", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })} · ${entries.length} mise${entries.length > 1 ? "s" : ""} · ${formaterMontant(total)} au total`
+            ? d.jour.enCoursMeta
+            : remplir(d.jour.clotureeMeta, {
+                date: new Date(manche.closed_at!).toLocaleDateString(locale, {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                }),
+                mises: `${entries.length} ${entries.length > 1 ? d.jour.mises : d.jour.mise}`,
+                total: formaterMontant(total, locale),
+              })
         }
       />
 
@@ -45,10 +57,10 @@ export function VueJour({
             <Reveal>
               <div className="border-t-2 border-zinc-950 bg-zinc-50 px-6 py-14 text-center">
                 <p className="font-mono text-[11px] font-medium tracking-[0.25em] text-zinc-500 uppercase">
-                  Tableau vierge
+                  {d.jour.videOeil}
                 </p>
                 <p className="mx-auto mt-4 max-w-[46ch] text-xl font-bold tracking-tight text-balance sm:text-2xl">
-                  Aucune mise sur cette manche.
+                  {d.jour.videTitre}
                 </p>
               </div>
             </Reveal>
@@ -77,9 +89,11 @@ export function VueJour({
                           >
                             {premier
                               ? enCours
-                                ? "Première place · en direct"
-                                : "Champion du jour"
-                              : `Place ${String(index + 1).padStart(2, "0")}`}
+                                ? d.jour.premierePlaceDirect
+                                : d.jour.championDuJour
+                              : remplir(d.jour.place, {
+                                  n: String(index + 1).padStart(2, "0"),
+                                })}
                           </p>
                           <p
                             className={
@@ -88,7 +102,7 @@ export function VueJour({
                                 : "text-lg font-bold tracking-tight tabular-nums"
                             }
                           >
-                            {formaterMontant(entree.amount_cents)}
+                            {formaterMontant(entree.amount_cents, locale)}
                           </p>
                         </div>
                         <div
@@ -119,7 +133,7 @@ export function VueJour({
                               </p>
                             )}
                             <p className="mt-2 truncate font-mono text-[11px] text-zinc-500 sm:text-[12px]">
-                              {hote(entree.project_url)} · {entree.category}
+                              {hote(entree.project_url)} · {d.categories[entree.category as CategorieCle] ?? entree.category}
                             </p>
                           </div>
                         </div>
@@ -136,14 +150,14 @@ export function VueJour({
               href={`${basePath}/palmares`}
               className="group mt-14 inline-flex items-center gap-2.5 text-lg font-bold tracking-tight"
             >
-              Retour au palmarès
+              {d.jour.retourPalmares}
               <PastilleFleche sombre />
             </Link>
           </Reveal>
         </div>
       </main>
 
-      <PiedPage />
+      <PiedPage d={d} />
     </div>
   );
 }
