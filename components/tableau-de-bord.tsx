@@ -114,7 +114,7 @@ export function TableauDeBord({
 
       {/* CLASSEMENT : chrono et appel a miser integres a l'intertitre */}
       <section id="classement" className="scroll-mt-10 bg-white">
-        <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 sm:py-16 lg:py-20">
+        <div className="mx-auto w-full max-w-7xl px-4 pt-6 pb-10 sm:px-6 sm:pt-8 sm:pb-16 lg:pt-10 lg:pb-20">
           <TitreSection
             oeilDeBoeuf={remplir(d.accueil.jourEnDirect, { n: manche.numero })}
             titre={d.accueil.classementDuJour}

@@ -16,6 +16,7 @@ export type Entree = {
   category: string;
   tagline: string | null;
   logo_url: string | null;
+  clics: number;
   amount_cents: number;
   created_at: string;
 };

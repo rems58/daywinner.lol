@@ -18,6 +18,8 @@ function construireEntrees(mancheId: string, brutes: Brut[]): Entree[] {
     tagline,
     // Laisse null : l'apercu montre justement le repli favicon automatique.
     logo_url: null,
+    // Volumes plausibles : le #1 attire logiquement plus de clics.
+    clics: Math.max(3, Math.round(cents / 12) - i * 7),
     amount_cents: cents,
     created_at: new Date(Date.now() - i * 60_000).toISOString(),
   }));

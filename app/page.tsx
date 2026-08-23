@@ -5,6 +5,7 @@ import { MISE_MIN_CENTS, formaterMontant, remplir } from "@/lib/constantes";
 import { TableauDeBord } from "@/components/tableau-de-bord";
 import { Navigation, PiedPage, TitreSection, ROUGE } from "@/components/habillage";
 import { Reveal } from "@/components/fx";
+import { BandeauPaiement } from "@/components/bandeau-paiement";
 import type { Manche, Entree } from "@/lib/types";
 
 export default async function Accueil({ searchParams }: PageProps<"/">) {
@@ -29,18 +30,10 @@ export default async function Accueil({ searchParams }: PageProps<"/">) {
   return (
     <div className="flex flex-1 flex-col">
       {(params.merci || params.annule) && (
-        <div className="bg-encre px-6 pt-6 text-center">
-          <p
-            className="mx-auto max-w-7xl border-l-4 px-4 py-3 text-left text-[14px] leading-relaxed"
-            style={
-              params.merci
-                ? { borderColor: ROUGE, backgroundColor: "#fdf1ef", color: "#7a1d10" }
-                : { borderColor: "#3f3f46", backgroundColor: "#fafafa", color: "#3f3f46" }
-            }
-          >
-            {params.merci ? d.accueil.merci : d.accueil.annule}
-          </p>
-        </div>
+        <BandeauPaiement
+          message={params.merci ? d.accueil.merci : d.accueil.annule}
+          succes={Boolean(params.merci)}
+        />
       )}
 
       {manche ? (

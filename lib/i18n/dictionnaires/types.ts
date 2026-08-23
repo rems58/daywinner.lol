@@ -72,6 +72,7 @@ export type Dictionnaire = {
     videCta: string; // {montant}
     premierePlace: string; // {n}
     voirComplet: string;
+    clics: string; // {n}
     page: string; // {page} {total}
     precedente: string;
     suivante: string;

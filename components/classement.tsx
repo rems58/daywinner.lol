@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Reveal } from "@/components/fx";
 import { PastilleFleche, ROUGE } from "@/components/habillage";
 import { LogoProjet } from "@/components/logo-projet";
+import { LienProjet } from "@/components/lien-projet";
 import { MISE_MIN_CENTS, formaterMontant, remplir } from "@/lib/constantes";
 import type { Dictionnaire, CategorieCle } from "@/lib/i18n/dictionnaires/types";
 import type { Locale } from "@/lib/i18n/config";
@@ -49,7 +49,7 @@ export function Classement({
 
   if (entries.length === 0) {
     return (
-      <Reveal>
+      <div>
         <div className="border-t-2 border-zinc-950 bg-zinc-50 px-6 py-14 text-center">
           <p className="font-mono text-[11px] font-medium tracking-[0.25em] text-zinc-500 uppercase">
             {d.classement.videOeil}
@@ -68,7 +68,7 @@ export function Classement({
             {remplir(d.classement.videCta, { montant: formaterMontant(MISE_MIN_CENTS, locale) })}
           </a>
         </div>
-      </Reveal>
+      </div>
     );
   }
 
@@ -80,13 +80,13 @@ export function Classement({
     <div>
       {/* Le #1 occupe une plaque editoriale pleine largeur : c'est le
           "monopole" de la journee, il ne se lit pas comme une ligne de liste. */}
-      <Reveal>
-        <a
+      {/* Aucune animation d'apparition ici : le classement est le contenu
+          principal, il doit etre lisible des le premier rendu, sans scroll. */}
+      <div style={{ borderTopColor: ROUGE }}>
+        <LienProjet
+          entreeId={premier.id}
           href={`https://${hote(premier.project_url)}`}
-          target="_blank"
-          rel="noreferrer noopener nofollow"
           className="group block border-t-4 bg-zinc-50 px-4 py-5 transition-colors duration-500 hover:bg-zinc-100 sm:px-10 sm:py-10"
-          style={{ borderTopColor: ROUGE }}
         >
           <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
             <div className="flex min-w-0 gap-4 sm:gap-5">
@@ -112,8 +112,9 @@ export function Classement({
                     {premier.tagline}
                   </p>
                 )}
-                <p className="mt-2 truncate font-mono text-[11px] text-zinc-500 sm:mt-3 sm:text-[12px]">
-                  {hote(premier.project_url)} · {libelleCategorie(d, premier.category)}
+                <p className="mt-2 font-mono text-[11px] leading-relaxed text-zinc-500 sm:mt-3 sm:text-[12px]">
+                  {hote(premier.project_url)} · {libelleCategorie(d, premier.category)} ·{" "}
+                  {remplir(d.classement.clics, { n: premier.clics })}
                 </p>
               </div>
             </div>
@@ -121,18 +122,17 @@ export function Classement({
               {formaterMontant(premier.amount_cents, locale)}
             </p>
           </div>
-        </a>
-      </Reveal>
+        </LienProjet>
+      </div>
 
       {visibles.length > 0 && (
         <ol className="mt-6 grid gap-x-12 gap-y-5 sm:mt-10 sm:grid-cols-2 sm:gap-y-7">
           {visibles.map((entree, index) => (
-            <Reveal key={entree.id} delay={0.05 + (index % 2) * 0.08}>
-              <li>
-                <a
+            <li key={entree.id}>
+              <div>
+                <LienProjet
+                  entreeId={entree.id}
                   href={`https://${hote(entree.project_url)}`}
-                  target="_blank"
-                  rel="noreferrer noopener nofollow"
                   className="group flex items-center gap-4 border-t border-zinc-300 pt-4"
                 >
                   <span className="font-mono text-sm font-semibold text-zinc-400 tabular-nums">
@@ -147,22 +147,22 @@ export function Classement({
                     <span className="block truncate text-lg font-bold tracking-tight transition-colors duration-300 group-hover:text-[#e8442e]">
                       {entree.project_name}
                     </span>
-                    <span className="mt-0.5 block truncate font-mono text-[12px] text-zinc-500">
-                      {libelleCategorie(d, entree.category)}
+                    <span className="mt-0.5 block font-mono text-[12px] text-zinc-500">
+                      {libelleCategorie(d, entree.category)} ·{" "}
+                      {remplir(d.classement.clics, { n: entree.clics })}
                     </span>
                   </span>
                   <span className="shrink-0 text-lg font-bold tracking-tight tabular-nums">
                     {formaterMontant(entree.amount_cents, locale)}
                   </span>
-                </a>
-              </li>
-            </Reveal>
+                </LienProjet>
+              </div>
+            </li>
           ))}
         </ol>
       )}
 
-      <Reveal delay={0.15}>
-        <div className="mt-10 flex flex-wrap items-center justify-between gap-x-8 gap-y-4">
+      <div className="mt-10 flex flex-wrap items-center justify-between gap-x-8 gap-y-4">
           <Link
             href={`${basePath}/jour/${numeroManche}`}
             className="group inline-flex items-center gap-2.5 text-lg font-bold tracking-tight"
@@ -196,8 +196,7 @@ export function Classement({
               </div>
             </div>
           )}
-        </div>
-      </Reveal>
+      </div>
     </div>
   );
 }
