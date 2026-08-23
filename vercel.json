@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/cloturer-manche",
+      "schedule": "*/1 * * * *"
+    }
+  ]
+}
