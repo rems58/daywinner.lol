@@ -114,7 +114,9 @@ export function Classement({
                 )}
                 <p className="mt-2 font-mono text-[11px] leading-relaxed text-zinc-500 sm:mt-3 sm:text-[12px]">
                   {hote(premier.project_url)} · {libelleCategorie(d, premier.category)} ·{" "}
-                  {remplir(d.classement.clics, { n: premier.clics })}
+                  <span className="font-bold" style={{ color: ROUGE }}>
+                    {remplir(d.classement.clics, { n: premier.clics })}
+                  </span>
                 </p>
               </div>
             </div>
@@ -149,7 +151,9 @@ export function Classement({
                     </span>
                     <span className="mt-0.5 block font-mono text-[12px] text-zinc-500">
                       {libelleCategorie(d, entree.category)} ·{" "}
-                      {remplir(d.classement.clics, { n: entree.clics })}
+                      <span className="font-bold" style={{ color: ROUGE }}>
+                        {remplir(d.classement.clics, { n: entree.clics })}
+                      </span>
                     </span>
                   </span>
                   <span className="shrink-0 text-lg font-bold tracking-tight tabular-nums">
