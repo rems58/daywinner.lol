@@ -75,16 +75,23 @@ aperçu est exactement ce que verront les visiteurs.
 
 ## Clôture des manches (cron)
 
-`app/api/cron/cloturer-manche` doit être appelée régulièrement pour clore la
-manche en cours dès que `ends_at` est dépassé, et pour appliquer les
-prolongations anti-snipe créées par des mises tardives. `vercel.json`
-déclare un cron à la minute.
+`app/api/cron/cloturer-manche` doit être appelée **chaque minute** pour clore
+la manche dès que `ends_at` est dépassé, et pour tenir compte des
+prolongations anti-snipe créées par des mises tardives. Sans cet appel,
+aucune manche ne se clôture et la règle anti-snipe ne s'applique jamais.
 
-⚠️ **Le plan Vercel Hobby ne déclenche les crons qu'une fois par jour**, pas
-à la minute, la granularité `*/1 * * * *` nécessite un plan Pro. En
-attendant, ou en alternative gratuite, un pinger externe (cron-job.org,
-GitHub Actions scheduled, etc.) peut appeler l'endpoint chaque minute avec
-`Authorization: Bearer $CRON_SECRET`.
+L'appel est confié à un **planificateur externe** (cron-job.org), avec
+l'en-tête `Authorization: Bearer $CRON_SECRET`. L'endpoint est idempotent :
+il vérifie l'heure et ne fait rien tant que la manche court.
+
+Il n'y a volontairement **pas de `vercel.json`** : le plan Vercel Hobby
+refuse tout cron plus fréquent que quotidien, et bloque même le déploiement
+si le fichier en déclare un. Passer sur Vercel Pro permettrait de rapatrier
+le cron ici et de supprimer la dépendance au service tiers.
+
+Une granularité d'une minute est nécessaire : la fenêtre anti-snipe dure
+deux minutes, un planificateur à cinq minutes rendrait les clôtures
+imprécises.
 
 ## Commandes
 
