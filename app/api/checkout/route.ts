@@ -12,6 +12,8 @@ import {
   remplir,
 } from "@/lib/constantes";
 import type { CategorieCle } from "@/lib/i18n/dictionnaires/types";
+import { getDictionnaireLegal } from "@/lib/i18n/serveur-legal";
+import { CGV_VERSION } from "@/lib/cgv-version";
 
 /**
  * `managed_payments` est plus recent que les types du SDK (22.5.0), d'ou
@@ -28,7 +30,11 @@ type ParamsSession = Stripe.Checkout.SessionCreateParams & {
 export async function POST(request: Request) {
   // Les erreurs remontent telles quelles dans le formulaire : elles doivent
   // parler la langue du visiteur, pas celle du serveur.
-  const [d, locale] = await Promise.all([getDictionnaire(), getLocale()]);
+  const [d, dl, locale] = await Promise.all([
+    getDictionnaire(),
+    getDictionnaireLegal(),
+    getLocale(),
+  ]);
   const body = await request.json().catch(() => null);
   if (!body) {
     return NextResponse.json({ erreur: d.api.requeteInvalide }, { status: 400 });
@@ -40,6 +46,7 @@ export async function POST(request: Request) {
   const tagline = String(body.tagline ?? "").trim().slice(0, 140) || null;
   const logo_url = String(body.logo_url ?? "").trim() || null;
   const amount_cents = Math.round(Number(body.amount_cents));
+  const renonce = body.renonce_retractation === true;
 
   if (!project_name || !project_url) {
     return NextResponse.json({ erreur: d.api.champsRequis }, { status: 400 });
@@ -50,6 +57,15 @@ export async function POST(request: Request) {
   if (!Number.isFinite(amount_cents) || amount_cents < MISE_MIN_CENTS) {
     return NextResponse.json(
       { erreur: remplir(d.api.miseMinimale, { montant: formaterMontant(MISE_MIN_CENTS, locale) }) },
+      { status: 400 }
+    );
+  }
+  // Sans renoncement expres, le droit de retractation de 14 jours reste
+  // ouvert et la mise ne serait pas fermement acquise. On refuse la commande
+  // plutot que d'encaisser un paiement contestable.
+  if (!renonce) {
+    return NextResponse.json(
+      { erreur: dl.retractation.erreurNonCochee },
       { status: 400 }
     );
   }
@@ -131,6 +147,9 @@ export async function POST(request: Request) {
       category,
       tagline: tagline ?? "",
       logo_url: logo_url ?? "",
+      // Preuve du renoncement, reportee en base par le webhook.
+      consentement_at: new Date().toISOString(),
+      cgv_version: CGV_VERSION,
     },
     success_url: `${origin}/?merci=1`,
     cancel_url: `${origin}/?annule=1`,

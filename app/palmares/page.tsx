@@ -1,5 +1,6 @@
 import { creerClientPublic } from "@/lib/supabase/server";
 import { getDictionnaire, getLocale } from "@/lib/i18n/server";
+import { getDictionnaireLegal } from "@/lib/i18n/serveur-legal";
 import { VuePalmares } from "@/components/vue-palmares";
 import type { Champion } from "@/lib/types";
 
@@ -9,7 +10,11 @@ export async function generateMetadata() {
 }
 
 export default async function Palmares() {
-  const [d, locale] = await Promise.all([getDictionnaire(), getLocale()]);
+  const [d, dl, locale] = await Promise.all([
+    getDictionnaire(),
+    getDictionnaireLegal(),
+    getLocale(),
+  ]);
   const supabase = creerClientPublic();
 
   const { data: champions } = await supabase
@@ -23,6 +28,7 @@ export default async function Palmares() {
   return (
     <VuePalmares
       d={d}
+      dl={dl}
       locale={locale}
       champions={champions ?? []}
       cumulCents={cumulCents}

@@ -13,6 +13,7 @@ import { Navigation, PastilleFleche, TitreSection, ROUGE } from "@/components/ha
 import { MISE_MIN_CENTS, formaterMontant, remplir } from "@/lib/constantes";
 import type { Dictionnaire } from "@/lib/i18n/dictionnaires/types";
 import type { Locale } from "@/lib/i18n/config";
+import type { DictionnaireLegal } from "@/lib/i18n/dictionnaires/legal-types";
 
 const liensHero = (d: Dictionnaire, basePath: string) => [
   { ...d.accueil.liens.classement, href: "#classement" },
@@ -29,12 +30,14 @@ function trier(entries: Entree[]) {
 
 export function TableauDeBord({
   d,
+  dl,
   locale,
   rondeInitiale,
   misesInitiales,
   basePath = "",
 }: {
   d: Dictionnaire;
+  dl: DictionnaireLegal;
   locale: Locale;
   rondeInitiale: Manche;
   misesInitiales: Entree[];
@@ -224,7 +227,12 @@ export function TableauDeBord({
               </div>
             </Reveal>
             <Reveal delay={0.12}>
-              <FormulaireMise d={d} locale={locale} mancheClose={manche.closed_at !== null} />
+              <FormulaireMise
+                d={d}
+                dl={dl}
+                locale={locale}
+                mancheClose={manche.closed_at !== null}
+              />
             </Reveal>
           </div>
         </div>

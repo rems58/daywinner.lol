@@ -93,6 +93,9 @@ export async function POST(request: Request) {
       category: metadata.category,
       tagline: metadata.tagline || null,
       logo_url: metadata.logo_url || null,
+      // Preuve horodatee du renoncement au droit de retractation.
+      consentement_retractation_at: metadata.consentement_at || null,
+      cgv_version: metadata.cgv_version || null,
       amount_cents,
       stripe_session_id: session.id,
       submitter_email: session.customer_details?.email ?? null,

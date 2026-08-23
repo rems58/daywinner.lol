@@ -1,5 +1,6 @@
 import { creerClientPublic } from "@/lib/supabase/server";
 import { getDictionnaire, getLocale } from "@/lib/i18n/server";
+import { getDictionnaireLegal } from "@/lib/i18n/serveur-legal";
 import { MISE_MIN_CENTS, formaterMontant, remplir } from "@/lib/constantes";
 import { TableauDeBord } from "@/components/tableau-de-bord";
 import { Navigation, PiedPage, TitreSection, ROUGE } from "@/components/habillage";
@@ -8,7 +9,11 @@ import type { Manche, Entree } from "@/lib/types";
 
 export default async function Accueil({ searchParams }: PageProps<"/">) {
   const params = await searchParams;
-  const [d, locale] = await Promise.all([getDictionnaire(), getLocale()]);
+  const [d, dl, locale] = await Promise.all([
+    getDictionnaire(),
+    getDictionnaireLegal(),
+    getLocale(),
+  ]);
   const supabase = creerClientPublic();
 
   const { data: manche } = await supabase
@@ -40,6 +45,7 @@ export default async function Accueil({ searchParams }: PageProps<"/">) {
 
       {manche ? (
         <TableauDeBord
+        dl={dl}
           d={d}
           locale={locale}
           rondeInitiale={manche}
@@ -95,7 +101,7 @@ export default async function Accueil({ searchParams }: PageProps<"/">) {
         </div>
       </section>
 
-      <PiedPage d={d} />
+      <PiedPage d={d} dl={dl} />
     </div>
   );
 }

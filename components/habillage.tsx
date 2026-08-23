@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Reveal } from "@/components/fx";
 import { SelecteurLangue } from "@/components/selecteur-langue";
 import type { Dictionnaire } from "@/lib/i18n/dictionnaires/types";
+import type { DictionnaireLegal } from "@/lib/i18n/dictionnaires/legal-types";
 import type { Locale } from "@/lib/i18n/config";
 import { cn } from "@/lib/utils";
 
@@ -172,7 +173,13 @@ export function EnteteInterieure({
   );
 }
 
-export function PiedPage({ d }: { d: Dictionnaire }) {
+export function PiedPage({
+  d,
+  dl,
+}: {
+  d: Dictionnaire;
+  dl?: DictionnaireLegal;
+}) {
   return (
     <footer className="bg-encre text-white">
       <div className="mx-auto flex w-full max-w-7xl flex-col justify-between gap-6 px-6 py-14 sm:flex-row sm:items-end">
@@ -182,13 +189,26 @@ export function PiedPage({ d }: { d: Dictionnaire }) {
           </span>
           <p className="mt-2 max-w-[40ch] text-sm text-white/60">{d.pied.accroche}</p>
         </div>
-        <div className="flex gap-6 text-sm text-white/50">
+        <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/50">
           <Link href="/palmares" className="transition-colors hover:text-white">
             {d.nav.palmares}
           </Link>
           <Link href="/regles" className="transition-colors hover:text-white">
             {d.nav.regles}
           </Link>
+          {dl && (
+            <>
+              <Link href="/mentions-legales" className="transition-colors hover:text-white">
+                {dl.pied.mentions}
+              </Link>
+              <Link href="/cgv" className="transition-colors hover:text-white">
+                {dl.pied.cgv}
+              </Link>
+              <Link href="/confidentialite" className="transition-colors hover:text-white">
+                {dl.pied.confidentialite}
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </footer>

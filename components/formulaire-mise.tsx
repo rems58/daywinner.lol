@@ -14,6 +14,7 @@ import {
 } from "@/lib/constantes";
 import type { Dictionnaire } from "@/lib/i18n/dictionnaires/types";
 import type { Locale } from "@/lib/i18n/config";
+import type { DictionnaireLegal } from "@/lib/i18n/dictionnaires/legal-types";
 
 const CHAMP =
   "w-full rounded-sm border border-zinc-300 bg-white px-4 py-3 text-[15px] text-zinc-950 outline-none transition-colors duration-300 placeholder:text-zinc-400 focus:border-zinc-950";
@@ -23,10 +24,12 @@ const LIBELLE =
 
 export function FormulaireMise({
   d,
+  dl,
   locale,
   mancheClose,
 }: {
   d: Dictionnaire;
+  dl: DictionnaireLegal;
   locale: Locale;
   mancheClose: boolean;
 }) {
@@ -37,6 +40,8 @@ export function FormulaireMise({
   const [url, setUrl] = useState("");
   const [logo, setLogo] = useState("");
   const [envoiLogo, setEnvoiLogo] = useState(false);
+  // Non pre-cochee : un consentement pre-coche n'est pas un consentement expres.
+  const [renonce, setRenonce] = useState(false);
 
   async function televerserLogo(evenement: React.ChangeEvent<HTMLInputElement>) {
     const fichier = evenement.target.files?.[0];
@@ -76,6 +81,13 @@ export function FormulaireMise({
   async function soumettre(evenement: React.FormEvent<HTMLFormElement>) {
     evenement.preventDefault();
     setErreur(null);
+
+    // Verrou cote client : le serveur revalide de toute facon.
+    if (!renonce) {
+      setErreur(dl.retractation.erreurNonCochee);
+      return;
+    }
+
     setEnCours(true);
 
     const donnees = new FormData(evenement.currentTarget);
@@ -92,6 +104,7 @@ export function FormulaireMise({
           tagline: donnees.get("tagline"),
           logo_url: donnees.get("logo_url"),
           amount_cents: Math.round(montantEuros * 100),
+          renonce_retractation: true,
         }),
       });
       // Reponse illisible (page d'erreur HTML) : on ne la confond pas avec
@@ -279,9 +292,39 @@ export function FormulaireMise({
         </p>
       )}
 
+      {/* Renoncement au droit de retractation. La case n'est jamais
+          pre-cochee : un consentement pre-coche n'est pas expres au sens de
+          l'article L221-28 du code de la consommation, et ne protegerait
+          donc pas contre une demande de remboursement. */}
+      <div className="flex flex-col gap-2 rounded-md bg-zinc-50 p-4 ring-1 ring-zinc-950/5">
+        <label className="flex cursor-pointer items-start gap-3">
+          <input
+            type="checkbox"
+            checked={renonce}
+            onChange={(e) => setRenonce(e.target.checked)}
+            required
+            className="mt-0.5 size-4 shrink-0 cursor-pointer accent-[#e8442e]"
+          />
+          <span className="text-[13px] leading-relaxed text-zinc-700">
+            {dl.retractation.caseACocher}
+          </span>
+        </label>
+        <p className="text-[12px] leading-relaxed text-zinc-500">
+          {dl.retractation.precision}{" "}
+          <a
+            href="/cgv"
+            target="_blank"
+            rel="noreferrer"
+            className="font-semibold text-zinc-950 underline underline-offset-2"
+          >
+            {dl.retractation.lireCgv}
+          </a>
+        </p>
+      </div>
+
       <button
         type="submit"
-        disabled={enCours || mancheClose}
+        disabled={enCours || mancheClose || !renonce}
         style={{ backgroundColor: ROUGE }}
         className="w-full rounded-sm px-7 py-3.5 text-[15px] font-bold text-white transition-all duration-300 hover:brightness-110 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50"
       >

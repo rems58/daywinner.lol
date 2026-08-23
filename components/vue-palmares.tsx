@@ -4,6 +4,7 @@ import Link from "next/link";
 import { formaterMontant, remplir } from "@/lib/constantes";
 import type { Dictionnaire, CategorieCle } from "@/lib/i18n/dictionnaires/types";
 import type { Locale } from "@/lib/i18n/config";
+import type { DictionnaireLegal } from "@/lib/i18n/dictionnaires/legal-types";
 import { EnteteInterieure, PastilleFleche, PiedPage, ROUGE } from "@/components/habillage";
 import { LogoProjet } from "@/components/logo-projet";
 import { Reveal } from "@/components/fx";
@@ -19,6 +20,7 @@ function formaterDate(iso: string, locale: Locale) {
 
 export function VuePalmares({
   d,
+  dl,
   locale,
   champions,
   cumulCents,
@@ -26,6 +28,7 @@ export function VuePalmares({
   basePath = "",
 }: {
   d: Dictionnaire;
+  dl: DictionnaireLegal;
   locale: Locale;
   champions: Champion[];
   cumulCents: number;
@@ -138,7 +141,7 @@ export function VuePalmares({
         </div>
       </main>
 
-      <PiedPage d={d} />
+      <PiedPage d={d} dl={dl} />
     </div>
   );
 }

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { EnteteInterieure, PiedPage, ROUGE } from "@/components/habillage";
 import { Reveal } from "@/components/fx";
 import { getDictionnaire, getLocale } from "@/lib/i18n/server";
+import { getDictionnaireLegal } from "@/lib/i18n/serveur-legal";
 import { formaterMontant, remplir, MISE_MIN_CENTS } from "@/lib/constantes";
 
 export async function generateMetadata() {
@@ -10,7 +11,11 @@ export async function generateMetadata() {
 }
 
 export default async function Regles() {
-  const [d, locale] = await Promise.all([getDictionnaire(), getLocale()]);
+  const [d, dl, locale] = await Promise.all([
+    getDictionnaire(),
+    getDictionnaireLegal(),
+    getLocale(),
+  ]);
   const montant = formaterMontant(MISE_MIN_CENTS, locale);
 
   return (
@@ -66,7 +71,7 @@ export default async function Regles() {
         </div>
       </main>
 
-      <PiedPage d={d} />
+      <PiedPage d={d} dl={dl} />
     </div>
   );
 }
