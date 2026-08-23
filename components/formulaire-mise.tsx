@@ -88,9 +88,14 @@ export function FormulaireMise({
           amount_cents: Math.round(montantEuros * 100),
         }),
       });
-      const resultat = await reponse.json();
-      if (!reponse.ok) {
-        setErreur(resultat.erreur ?? "Une erreur est survenue.");
+      // Reponse illisible (page d'erreur HTML) : on ne la confond pas avec
+      // une panne reseau, sinon la vraie cause reste introuvable.
+      const resultat = await reponse.json().catch(() => null);
+      if (!reponse.ok || !resultat?.url) {
+        setErreur(
+          resultat?.erreur ??
+            `Le serveur a répondu une erreur (${reponse.status}). Regarde les logs.`
+        );
         setEnCours(false);
         return;
       }

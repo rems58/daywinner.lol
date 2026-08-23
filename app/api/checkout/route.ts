@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import type Stripe from "stripe";
 import { stripe } from "@/lib/stripe";
 import { creerClientPublic } from "@/lib/supabase/server";
 import {
@@ -8,6 +9,18 @@ import {
   logoUrlValide,
   normaliserUrl,
 } from "@/lib/constantes";
+
+/**
+ * `managed_payments` est plus recent que les types du SDK (22.5.0), d'ou
+ * cette extension. On le desactive a chaque session : Managed Payments est
+ * actif par defaut sur le compte, sans interrupteur dans le Dashboard, mais
+ * il exclut les services publicitaires — notre categorie. Il autorise en
+ * outre Stripe a rembourser sous 60 jours, ce qui contredirait la regle
+ * "mise non remboursable" annoncee aux acheteurs.
+ */
+type ParamsSession = Stripe.Checkout.SessionCreateParams & {
+  managed_payments?: { enabled: boolean };
+};
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
@@ -88,9 +101,15 @@ export async function POST(request: Request) {
 
   const origin = process.env.NEXT_PUBLIC_SITE_URL ?? new URL(request.url).origin;
 
-  const session = await stripe.checkout.sessions.create({
+  // Une erreur Stripe non rattrapee renverrait une page HTML, que le client
+  // n'arrive pas a lire : il afficherait "impossible de contacter le serveur"
+  // et la cause reelle resterait invisible. On repond toujours en JSON.
+  // Pas de payment_method_types : sans ce parametre, Stripe propose les
+  // moyens de paiement actives dans le Dashboard (carte, Apple Pay, Link),
+  // ce qui vaut mieux que de figer "carte" ici.
+  const params: ParamsSession = {
     mode: "payment",
-    payment_method_types: ["card"],
+    managed_payments: { enabled: false },
     line_items: [
       {
         price_data: {
@@ -98,6 +117,10 @@ export async function POST(request: Request) {
           unit_amount: amount_cents,
           product_data: {
             name: `Mise daywinner.lol — Jour #${manche.numero} — ${project_name}`,
+            // "Website Advertising" : decrit exactement le produit vendu.
+            // Sans effet tant que Stripe Tax n'est pas active, mais c'est le
+            // code qui donnera le bon traitement de TVA le jour ou il le sera.
+            tax_code: "txcd_10701000",
           },
         },
         quantity: 1,
@@ -113,7 +136,16 @@ export async function POST(request: Request) {
     },
     success_url: `${origin}/?merci=1`,
     cancel_url: `${origin}/?annule=1`,
-  });
+  };
 
-  return NextResponse.json({ url: session.url });
+  try {
+    const session = await stripe.checkout.sessions.create(params);
+    return NextResponse.json({ url: session.url });
+  } catch (erreur) {
+    console.error("Échec création session Stripe", erreur);
+    return NextResponse.json(
+      { erreur: "Le paiement n'a pas pu être lancé. Réessaie dans un instant." },
+      { status: 502 }
+    );
+  }
 }

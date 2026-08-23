@@ -35,9 +35,15 @@ export function BandeauStats() {
         setVisiteurs(data?.visiteurs ?? null);
         return;
       }
+      const { data, error } = await supabase.rpc("incrementer_visiteurs");
+      if (error || typeof data !== "number") {
+        // Marqueur non pose : la visite sera comptee au prochain essai
+        // plutot que perdue pour toute la session de l'onglet.
+        setVisiteurs(null);
+        return;
+      }
       sessionStorage.setItem(CLE_SESSION, "1");
-      const { data } = await supabase.rpc("incrementer_visiteurs");
-      setVisiteurs(typeof data === "number" ? data : null);
+      setVisiteurs(data);
     };
     void compter();
 
