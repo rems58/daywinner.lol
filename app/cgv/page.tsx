@@ -1,13 +1,19 @@
 import { getDictionnaire, getLocale } from "@/lib/i18n/server";
 import { getDictionnaireLegal } from "@/lib/i18n/serveur-legal";
+import { construireMeta } from "@/lib/seo";
 import { CoqueLegale, SectionsLegales } from "@/components/vue-legale";
 import { MEDIATEUR, PLATEFORME_RLL, A_COMPLETER } from "@/lib/legal";
 import { CGV_VERSION } from "@/lib/cgv-version";
 import { remplir } from "@/lib/constantes";
 
 export async function generateMetadata() {
-  const dl = await getDictionnaireLegal();
-  return { title: `${dl.cgv.titre} · daywinner.lol`, description: dl.cgv.meta };
+  const [dl, locale] = await Promise.all([getDictionnaireLegal(), getLocale()]);
+  return construireMeta({
+    titre: `${dl.cgv.titre} · daywinner.lol`,
+    description: dl.cgv.meta,
+    chemin: "/cgv",
+    locale,
+  });
 }
 
 export default async function Cgv() {

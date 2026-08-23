@@ -2,12 +2,18 @@ import Link from "next/link";
 import { EnteteInterieure, PiedPage, ROUGE } from "@/components/habillage";
 import { Reveal } from "@/components/fx";
 import { getDictionnaire, getLocale } from "@/lib/i18n/server";
+import { construireMeta } from "@/lib/seo";
 import { getDictionnaireLegal } from "@/lib/i18n/serveur-legal";
 import { formaterMontant, remplir, MISE_MIN_CENTS } from "@/lib/constantes";
 
 export async function generateMetadata() {
-  const d = await getDictionnaire();
-  return { title: `${d.regles.oeil} · daywinner.lol`, description: d.regles.meta };
+  const [d, locale] = await Promise.all([getDictionnaire(), getLocale()]);
+  return construireMeta({
+    titre: `${d.regles.oeil} · daywinner.lol`,
+    description: d.regles.meta,
+    chemin: "/regles",
+    locale,
+  });
 }
 
 export default async function Regles() {

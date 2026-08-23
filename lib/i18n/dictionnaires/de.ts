@@ -4,7 +4,7 @@ export const de: Dictionnaire = {
   meta: {
     titre: "daywinner.lol: Platz eins, für einen ganzen Tag",
     description:
-      "Zahl und schnapp dir Platz eins des Tages. Die Rangliste startet alle 24 Stunden wieder bei null, mit Anti-Snipe-Regel: In den letzten zwei Minuten kann dir niemand den Sieg klauen.",
+      "Zahle für den ersten Platz des Tages. Die Rangliste wird jeden Abend um 21 Uhr Pariser Zeit zurückgesetzt, mit Anti-Snipe-Regel: In den letzten zwei Minuten kann niemand den Sieg stehlen.",
   },
 
   nav: { palmares: "Bestenliste", regles: "Regeln", miser: "Bieten", langue: "Sprache" },
@@ -96,7 +96,7 @@ export const de: Dictionnaire = {
     videOeil: "Leeres Board",
     videTitre: "Auf Tag #{n} hat noch niemand geboten.",
     videTexte:
-      "Wer früh dran ist, hält Platz eins stundenlang, zum Preis eines Kaffees.",
+      "Das erste Gebot übernimmt die Führung, zum Preis eines Kaffees. Jeden Abend um 21 Uhr Pariser Zeit beginnt alles von vorn.",
     videCta: "Den Tag eröffnen für {montant}",
     premierePlace: "Platz eins · Tag #{n}",
     voirComplet: "Komplette Rangliste ansehen",

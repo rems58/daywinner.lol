@@ -4,7 +4,7 @@ export const it: Dictionnaire = {
   meta: {
     titre: "daywinner.lol: il primo posto, per un giorno intero",
     description:
-      "Paga per prenderti il primo posto della giornata. La classifica riparte da zero ogni 24h, con regola anti-snipe: negli ultimi due minuti nessuno può rubarti la vittoria.",
+      "Paga per prenderti il primo posto della giornata. La classifica riparte da zero ogni sera alle 21, ora di Parigi, con regola anti-snipe: negli ultimi due minuti nessuno può rubare la vittoria.",
   },
 
   nav: { palmares: "Albo d'oro", regles: "Regole", miser: "Punta", langue: "Lingua" },
@@ -96,7 +96,7 @@ export const it: Dictionnaire = {
     videOeil: "Tabellone vuoto",
     videTitre: "Nessuno ha ancora puntato sul Giorno #{n}.",
     videTexte:
-      "Chi si alza presto può tenere il primo posto per ore al prezzo di un caffè.",
+      "La prima puntata prende la testa al prezzo di un caffè. Ogni sera alle 21, ora di Parigi, si riparte da zero.",
     videCta: "Apri la giornata per {montant}",
     premierePlace: "Primo posto · Giorno #{n}",
     voirComplet: "Vedi la classifica completa",

@@ -6,7 +6,84 @@ export const MISE_MIN_CENTS = 100;
 
 export const FENETRE_ANTI_SNIPE_MS = 2 * 60 * 1000;
 export const PROLONGATION_ANTI_SNIPE_MS = 2 * 60 * 1000;
-export const DUREE_MANCHE_MS = 24 * 60 * 60 * 1000;
+
+// La cloture est ancree sur une heure murale, et non sur "24 h apres la
+// precedente". Sinon chaque prolongation anti-snipe, et jusqu'au simple
+// retard du cron, decalerait definitivement toutes les manches suivantes :
+// le rendez-vous quotidien deviendrait mobile et personne ne pourrait en
+// prendre l'habitude.
+export const HEURE_CLOTURE = 21;
+export const FUSEAU_CLOTURE = "Europe/Paris";
+
+// Duree plancher d'une manche fraichement ouverte : evite d'en creer une qui
+// se refermerait dans la foulee si l'ancre du jour vient juste d'etre passee.
+const MANCHE_MIN_MS = 60 * 60 * 1000;
+const JOUR_MS = 24 * 60 * 60 * 1000;
+
+type PartiesDate = {
+  year: number;
+  month: number;
+  day: number;
+  hour: number;
+  minute: number;
+  second: number;
+};
+
+/** Lecture d'un instant sur l'horloge murale du fuseau de cloture. */
+function partiesDansFuseau(instant: Date): PartiesDate {
+  const parties = new Intl.DateTimeFormat("en-US", {
+    timeZone: FUSEAU_CLOTURE,
+    hourCycle: "h23",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  }).formatToParts(instant);
+
+  const lu: Record<string, number> = {};
+  for (const p of parties) {
+    if (p.type !== "literal") lu[p.type] = Number(p.value);
+  }
+  return lu as unknown as PartiesDate;
+}
+
+/** Decalage du fuseau par rapport a UTC, en minutes, a cet instant precis. */
+function decalageMinutes(instant: Date) {
+  const p = partiesDansFuseau(instant);
+  const luCommeUTC = Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute, p.second);
+  // On tronque les millisecondes des deux cotes : le format n'en rend pas.
+  return (luCommeUTC - Math.floor(instant.getTime() / 1000) * 1000) / 60000;
+}
+
+/** Instant UTC ou l'horloge de Paris affiche ce jour a HEURE_CLOTURE pile. */
+function ancrage(annee: number, mois: number, jour: number) {
+  const naif = Date.UTC(annee, mois - 1, jour, HEURE_CLOTURE, 0, 0);
+  // Deux passes : la premiere estime le decalage, la seconde le corrige si
+  // cette estimation tombait de l'autre cote d'un changement d'heure.
+  let ts = naif;
+  for (let i = 0; i < 2; i++) {
+    ts = naif - decalageMinutes(new Date(ts)) * 60000;
+  }
+  return ts;
+}
+
+/**
+ * Prochaine cloture : le prochain HEURE_CLOTURE h de Paris, ete comme hiver.
+ * Absorbe la derive, une manche prolongee jusqu'a 21 h 14 par une bataille
+ * anti-snipe est suivie d'une manche qui se referme quand meme a 21 h pile
+ * le lendemain.
+ */
+export function prochaineCloture(depuis: Date = new Date()) {
+  const p = partiesDansFuseau(depuis);
+  let candidat = ancrage(p.year, p.month, p.day);
+  if (candidat - depuis.getTime() < MANCHE_MIN_MS) {
+    const lendemain = partiesDansFuseau(new Date(depuis.getTime() + JOUR_MS));
+    candidat = ancrage(lendemain.year, lendemain.month, lendemain.day);
+  }
+  return new Date(candidat);
+}
 
 // Les categories vivent desormais dans le dictionnaire : la base stocke une
 // cle stable, l'affichage la traduit. Reexporte ici pour que les modules qui

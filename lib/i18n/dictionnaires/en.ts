@@ -4,7 +4,7 @@ export const en: Dictionnaire = {
   meta: {
     titre: "daywinner.lol : first place, for the day",
     description:
-      "Pay to take today's first place. The leaderboard resets every 24 hours, with an anti-snipe rule: nobody can steal the win in the last two minutes.",
+      "Pay to take the top spot of the day. The leaderboard resets every evening at 9 PM Paris time, with an anti-snipe rule: nobody can steal the win in the last two minutes.",
   },
 
   nav: { palmares: "Hall of fame", regles: "Rules", miser: "Bid", langue: "Language" },
@@ -96,7 +96,7 @@ export const en: Dictionnaire = {
     videOeil: "Empty board",
     videTitre: "Nobody has bid on Day #{n} yet.",
     videTexte:
-      "Whoever gets up early can hold first place for hours for the price of a coffee.",
+      "The first bid takes the lead for the price of a coffee. Everything resets every evening at 9 PM Paris time.",
     videCta: "Open the day for {montant}",
     premierePlace: "First place · Day #{n}",
     voirComplet: "See the full leaderboard",

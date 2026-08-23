@@ -1,13 +1,16 @@
 import { getDictionnaire, getLocale } from "@/lib/i18n/server";
 import { getDictionnaireLegal } from "@/lib/i18n/serveur-legal";
+import { construireMeta } from "@/lib/seo";
 import { CoqueLegale, SectionsLegales } from "@/components/vue-legale";
 
 export async function generateMetadata() {
-  const dl = await getDictionnaireLegal();
-  return {
-    title: `${dl.confidentialite.titre} · daywinner.lol`,
+  const [dl, locale] = await Promise.all([getDictionnaireLegal(), getLocale()]);
+  return construireMeta({
+    titre: `${dl.confidentialite.titre} · daywinner.lol`,
     description: dl.confidentialite.meta,
-  };
+    chemin: "/confidentialite",
+    locale,
+  });
 }
 
 export default async function Confidentialite() {

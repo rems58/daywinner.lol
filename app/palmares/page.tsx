@@ -1,12 +1,18 @@
 import { creerClientPublic } from "@/lib/supabase/server";
 import { getDictionnaire, getLocale } from "@/lib/i18n/server";
+import { construireMeta } from "@/lib/seo";
 import { getDictionnaireLegal } from "@/lib/i18n/serveur-legal";
 import { VuePalmares } from "@/components/vue-palmares";
 import type { Champion } from "@/lib/types";
 
 export async function generateMetadata() {
-  const d = await getDictionnaire();
-  return { title: `${d.palmares.oeil} · daywinner.lol`, description: d.palmares.meta };
+  const [d, locale] = await Promise.all([getDictionnaire(), getLocale()]);
+  return construireMeta({
+    titre: `${d.palmares.oeil} · daywinner.lol`,
+    description: d.palmares.meta,
+    chemin: "/palmares",
+    locale,
+  });
 }
 
 export default async function Palmares() {

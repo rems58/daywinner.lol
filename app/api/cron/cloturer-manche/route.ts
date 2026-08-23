@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { creerClientService } from "@/lib/supabase/server";
-import { DUREE_MANCHE_MS } from "@/lib/constantes";
+import { prochaineCloture } from "@/lib/constantes";
 import { posterTweetChampion } from "@/lib/twitter";
 import { formaterMontant } from "@/lib/constantes";
 
@@ -79,7 +79,7 @@ async function gerer(request: Request) {
     // Etat inattendu (jamais amorcée) : on ouvre la manche #1.
     await supabase
       .from("manches")
-      .insert({ numero: 1, ends_at: new Date(Date.now() + DUREE_MANCHE_MS).toISOString() });
+      .insert({ numero: 1, ends_at: prochaineCloture().toISOString() });
     return NextResponse.json({ cloturee: false, amorcee: true });
   }
 
@@ -101,7 +101,9 @@ async function gerer(request: Request) {
 
   await supabase.from("manches").insert({
     numero: manche.numero + 1,
-    ends_at: new Date(Date.now() + DUREE_MANCHE_MS).toISOString(),
+    // Ancree sur 21 h de Paris : la derive accumulee par les prolongations
+    // anti-snipe de la manche qui vient de se refermer s'arrete ici.
+    ends_at: prochaineCloture().toISOString(),
   });
 
   if (champion) {

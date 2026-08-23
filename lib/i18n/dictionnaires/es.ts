@@ -4,7 +4,7 @@ export const es: Dictionnaire = {
   meta: {
     titre: "daywinner.lol: el primer puesto, por un día",
     description:
-      "Paga y toma el primer puesto del día. La clasificación vuelve a cero cada 24 h, con regla anti-snipe: nadie puede robarte la victoria en los dos últimos minutos.",
+      "Paga por hacerte con el primer puesto del día. La clasificación vuelve a cero cada tarde a las 21 h, hora de París, con regla anti-snipe: nadie puede robar la victoria en los dos últimos minutos.",
   },
 
   nav: { palmares: "Palmarés", regles: "Reglas", miser: "Pujar", langue: "Idioma" },
@@ -96,7 +96,7 @@ export const es: Dictionnaire = {
     videOeil: "Tablero en blanco",
     videTitre: "Todavía nadie ha pujado en el Día #{n}.",
     videTexte:
-      "Quien madruga puede aguantar el primer puesto durante horas por el precio de un café.",
+      "La primera puja toma la delantera por el precio de un café. Cada tarde a las 21 h, hora de París, todo vuelve a empezar.",
     videCta: "Abrir la jornada por {montant}",
     premierePlace: "Primer puesto · Día #{n}",
     voirComplet: "Ver la clasificación completa",

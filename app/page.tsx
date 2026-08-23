@@ -7,6 +7,19 @@ import { Navigation, PiedPage, TitreSection, ROUGE } from "@/components/habillag
 import { Reveal } from "@/components/fx";
 import { BandeauPaiement } from "@/components/bandeau-paiement";
 import type { Manche, Entree } from "@/lib/types";
+import { construireMeta } from "@/lib/seo";
+import { DonneesStructurees } from "@/components/donnees-structurees";
+import { SITE_NOM, urlAbsolue } from "@/lib/site";
+
+export async function generateMetadata() {
+  const [d, locale] = await Promise.all([getDictionnaire(), getLocale()]);
+  return construireMeta({
+    titre: d.meta.titre,
+    description: d.meta.description,
+    chemin: "/",
+    locale,
+  });
+}
 
 export default async function Accueil({ searchParams }: PageProps<"/">) {
   const params = await searchParams;
@@ -29,6 +42,30 @@ export default async function Accueil({ searchParams }: PageProps<"/">) {
 
   return (
     <div className="flex flex-1 flex-col">
+      <DonneesStructurees
+        donnees={{
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "WebSite",
+              "@id": urlAbsolue("/#site"),
+              name: SITE_NOM,
+              url: urlAbsolue("/"),
+              inLanguage: locale,
+              description: d.meta.description,
+              publisher: { "@id": urlAbsolue("/#editeur") },
+            },
+            {
+              "@type": "Organization",
+              "@id": urlAbsolue("/#editeur"),
+              name: SITE_NOM,
+              url: urlAbsolue("/"),
+              logo: urlAbsolue("/icon.svg"),
+            },
+          ],
+        }}
+      />
+
       {(params.merci || params.annule) && (
         <BandeauPaiement
           message={params.merci ? d.accueil.merci : d.accueil.annule}

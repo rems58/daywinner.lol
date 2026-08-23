@@ -4,7 +4,7 @@ export const fr: Dictionnaire = {
   meta: {
     titre: "daywinner.lol : la première place, pour la journée",
     description:
-      "Paie pour prendre la première place du jour. Le classement repart de zéro toutes les 24h, avec règle anti-snipe : impossible de voler la victoire dans les deux dernières minutes.",
+      "Paie pour prendre la première place du jour. Le classement repart de zéro chaque soir à 21 h, heure de Paris, avec règle anti-snipe : impossible de voler la victoire dans les deux dernières minutes.",
   },
 
   nav: { palmares: "Palmarès", regles: "Règles", miser: "Miser", langue: "Langue" },
@@ -96,7 +96,7 @@ export const fr: Dictionnaire = {
     videOeil: "Tableau vierge",
     videTitre: "Personne n'a encore misé sur le Jour #{n}.",
     videTexte:
-      "Celui qui se lève tôt peut tenir la première place pendant des heures pour le prix d'un café.",
+      "La première mise prend la tête pour le prix d'un café. Tout repart de zéro chaque soir à 21 h, heure de Paris.",
     videCta: "Ouvrir la journée pour {montant}",
     premierePlace: "Première place · Jour #{n}",
     voirComplet: "Voir le classement complet",
