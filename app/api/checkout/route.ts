@@ -5,7 +5,7 @@ import { creerClientPublic } from "@/lib/supabase/server";
 import {
   CATEGORIES,
   MISE_MIN_CENTS,
-  MISE_MIN_PREMIERE_CENTS,
+  formaterMontant,
   logoUrlValide,
   normaliserUrl,
 } from "@/lib/constantes";
@@ -14,7 +14,7 @@ import {
  * `managed_payments` est plus recent que les types du SDK (22.5.0), d'ou
  * cette extension. On le desactive a chaque session : Managed Payments est
  * actif par defaut sur le compte, sans interrupteur dans le Dashboard, mais
- * il exclut les services publicitaires — notre categorie. Il autorise en
+ * il exclut les services publicitaires, notre categorie. Il autorise en
  * outre Stripe a rembourser sous 60 jours, ce qui contredirait la regle
  * "mise non remboursable" annoncee aux acheteurs.
  */
@@ -41,8 +41,11 @@ export async function POST(request: Request) {
   if (!CATEGORIES.includes(category as (typeof CATEGORIES)[number])) {
     return NextResponse.json({ erreur: "Catégorie invalide." }, { status: 400 });
   }
-  if (!Number.isFinite(amount_cents) || amount_cents < MISE_MIN_PREMIERE_CENTS) {
-    return NextResponse.json({ erreur: "Montant invalide." }, { status: 400 });
+  if (!Number.isFinite(amount_cents) || amount_cents < MISE_MIN_CENTS) {
+    return NextResponse.json(
+      { erreur: `Mise minimale : ${formaterMontant(MISE_MIN_CENTS)}.` },
+      { status: 400 }
+    );
   }
   if (logo_url && !logoUrlValide(logo_url)) {
     return NextResponse.json(
@@ -67,11 +70,9 @@ export async function POST(request: Request) {
     );
   }
 
-  const { count: nbMisesManche } = await supabase
-    .from("entries")
-    .select("id", { count: "exact", head: true })
-    .eq("manche_id", manche.id);
-
+  // Le plancher ne depend plus du remplissage du tableau : une entree coute
+  // toujours MISE_MIN_CENTS, deja verifie plus haut. Seule contrainte
+  // restante : rejouer sur le meme projet doit faire monter sa mise.
   const { data: miseExistante } = await supabase
     .from("entries")
     .select("amount_cents")
@@ -79,22 +80,13 @@ export async function POST(request: Request) {
     .eq("url_normalized", url_normalized)
     .maybeSingle();
 
-  const plancher = (nbMisesManche ?? 0) === 0 ? MISE_MIN_PREMIERE_CENTS : MISE_MIN_CENTS;
-
-  if (miseExistante) {
-    if (amount_cents <= miseExistante.amount_cents) {
-      return NextResponse.json(
-        {
-          erreur: `Ta mise actuelle sur ce projet est déjà de ${(
-            miseExistante.amount_cents / 100
-          ).toFixed(2)} €. Propose plus pour surenchérir.`,
-        },
-        { status: 400 }
-      );
-    }
-  } else if (amount_cents < plancher) {
+  if (miseExistante && amount_cents <= miseExistante.amount_cents) {
     return NextResponse.json(
-      { erreur: `Mise minimale : ${(plancher / 100).toFixed(2)} €.` },
+      {
+        erreur: `Ta mise actuelle sur ce projet est déjà de ${formaterMontant(
+          miseExistante.amount_cents
+        )}. Propose plus pour surenchérir.`,
+      },
       { status: 400 }
     );
   }
@@ -116,7 +108,7 @@ export async function POST(request: Request) {
           currency: "eur",
           unit_amount: amount_cents,
           product_data: {
-            name: `Mise daywinner.lol — Jour #${manche.numero} — ${project_name}`,
+            name: `Mise daywinner.lol · Jour #${manche.numero} · ${project_name}`,
             // "Website Advertising" : decrit exactement le produit vendu.
             // Sans effet tant que Stripe Tax n'est pas active, mais c'est le
             // code qui donnera le bon traitement de TVA le jour ou il le sera.

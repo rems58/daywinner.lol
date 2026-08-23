@@ -38,7 +38,7 @@ export function VuePalmares({
       <EnteteInterieure
         oeilDeBoeuf="Le palmarès"
         titre="Un champion par jour, pour toujours"
-        meta="Le classement repart de zéro chaque manche — mais la victoire, elle, reste."
+        meta="Le classement repart de zéro chaque manche, mais la victoire, elle, reste."
       />
 
       <main className="flex-1 bg-white">

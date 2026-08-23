@@ -49,7 +49,7 @@
 }
 
 /* Comme riveska.com : direction artistique editoriale a theme clair fixe
-   (sections blanches, hero et pied de page en encre) — pas de bascule
+   (sections blanches, hero et pied de page en encre), pas de bascule
    sombre automatique, sinon la composition perd son contraste voulu. */
 :root {
   color-scheme: light;

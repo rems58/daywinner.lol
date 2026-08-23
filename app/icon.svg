@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!--
+    Favicon daywinner.lol, dans la DA du site : fond encre (#040609) comme le
+    ciel du hero, chiffre 1 en blanc (la premiere place, l'objet du produit),
+    point rouge de marque (#e8442e) repris du ".lol" de l'entete. L'ensemble
+    se lit "1." : le rang et le domaine en un seul signe.
+    Formes pleines et un seul glyphe : ca reste lisible a 16 px, la ou un
+    "d" ou un mot entier deviendrait une tache.
+  -->
+  <rect width="64" height="64" rx="14" fill="#040609"/>
+  <path d="M21.5 20.5 L30 16.5 L30 47.5"
+        stroke="#ffffff"
+        stroke-width="7.5"
+        stroke-linecap="square"
+        stroke-linejoin="miter"
+        fill="none"/>
+  <circle cx="41.5" cy="46.5" r="4.75" fill="#e8442e"/>
+</svg>

@@ -1,5 +1,8 @@
-export const MISE_MIN_PREMIERE_CENTS = 100; // 1 € : la toute premiere mise d'une manche
-export const MISE_MIN_CENTS = 500; // 5 € : mise plancher une fois la manche lancee
+// 1 € du debut a la fin de la manche : n'importe qui peut entrer au
+// classement pour le prix d'un cafe, meme quand le haut du tableau est cher.
+// A montant egal, c'est l'anteriorite qui departage (le premier arrive reste
+// devant), donc un plancher bas ne permet pas de doubler quelqu'un.
+export const MISE_MIN_CENTS = 100;
 
 export const FENETRE_ANTI_SNIPE_MS = 2 * 60 * 1000;
 export const PROLONGATION_ANTI_SNIPE_MS = 2 * 60 * 1000;
@@ -60,7 +63,7 @@ export function logoUrlValide(url: string) {
 
 /**
  * Repli quand le miseur n'a pas fourni de logo : le favicon du domaine.
- * Un @handle (reseau social) n'a pas de domaine exploitable — on renvoie
+ * Un @handle (reseau social) n'a pas de domaine exploitable, on renvoie
  * null et l'affichage bascule sur le monogramme.
  */
 export function faviconDepuisUrl(projectUrl: string) {

@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { EnteteInterieure, PiedPage, ROUGE } from "@/components/habillage";
 import { Reveal } from "@/components/fx";
-import { formaterMontant, MISE_MIN_CENTS, MISE_MIN_PREMIERE_CENTS } from "@/lib/constantes";
+import { formaterMontant, MISE_MIN_CENTS } from "@/lib/constantes";
 
 export const metadata = {
-  title: "Règles — daywinner.lol",
+  title: "Règles · daywinner.lol",
   description:
     "Comment fonctionne daywinner.lol : classement payant, règle anti-snipe, reset quotidien, non-remboursement.",
 };
@@ -22,7 +22,7 @@ const ARTICLES = [
     n: "02",
     titre: "Règle anti-snipe",
     corps: [
-      "Si une mise est confirmée dans les deux dernières minutes avant la clôture, le chrono est automatiquement prolongé de deux minutes — comme dans une vraie salle des ventes.",
+      "Si une mise est confirmée dans les deux dernières minutes avant la clôture, le chrono est automatiquement prolongé de deux minutes, comme dans une vraie salle des ventes.",
       "La manche ne se termine que lorsque plus personne n'a surenchéri pendant deux minutes. Personne ne peut donc voler la première place à la dernière seconde.",
     ],
   },
@@ -30,7 +30,8 @@ const ARTICLES = [
     n: "03",
     titre: "Mise minimale",
     corps: [
-      `${formaterMontant(MISE_MIN_PREMIERE_CENTS)} pour la toute première mise d'une manche, ${formaterMontant(MISE_MIN_CENTS)} ensuite. Une journée qui vient de s'ouvrir est donc une aubaine pour les lève-tôt.`,
+      `${formaterMontant(MISE_MIN_CENTS)}, du début à la fin de la manche. Le ticket d'entrée ne monte jamais : n'importe qui peut rejoindre le classement pour le prix d'un café, même quand le haut du tableau est cher.`,
+      "À montant égal, c'est l'ancienneté qui départage : celui qui a misé le premier reste devant. Égaler une mise ne suffit donc pas pour doubler quelqu'un, il faut faire mieux.",
       "Tu peux surenchérir sur ton propre projet à tout moment : remets la même URL avec un montant supérieur à ta mise précédente, ta ligne monte sans créer de doublon.",
     ],
   },

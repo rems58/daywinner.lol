@@ -1,5 +1,5 @@
 "use client";
-// Animations de la landing — GPU only (transform/opacity), reprises de riveska.com.
+// Animations de la landing : GPU only (transform/opacity), reprises de riveska.com.
 import { type ReactNode } from "react";
 import { motion, useReducedMotion } from "motion/react";
 

@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://daywinner.lol"
   ),
-  title: "daywinner.lol — la première place, pour la journée",
+  title: "daywinner.lol : la première place, pour la journée",
   description:
     "Paie pour prendre la première place du jour. Le classement repart de zéro toutes les 24h, avec règle anti-snipe : impossible de voler la victoire dans les 2 dernières minutes.",
 };

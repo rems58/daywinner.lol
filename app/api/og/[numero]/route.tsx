@@ -61,7 +61,7 @@ export async function GET(
             display: "flex",
           }}
         >
-          daywinner.lol — Jour #{champion.numero}
+          daywinner.lol · Jour #{champion.numero}
         </div>
         <div
           style={{

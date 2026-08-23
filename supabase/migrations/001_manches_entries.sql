@@ -1,4 +1,4 @@
--- daywinner.lol — manches (rounds) + entries (mises) + palmares des champions.
+-- daywinner.lol : manches (rounds) + entries (mises) + palmares des champions.
 -- Aucune notion de reset planifie : une manche dure ~24h mais sa fin (ends_at)
 -- est prolongee par la regle anti-snipe (cf. app/api/webhooks/stripe et
 -- app/api/cron/cloturer-manche), donc numerotee plutot que datee.
@@ -97,7 +97,7 @@ create index if not exists logo_uploads_ip_idx on logo_uploads (ip_hash, created
 create index if not exists logo_uploads_age_idx on logo_uploads (created_at);
 
 -- RLS : lecture publique, ecriture reservee au service role (webhook Stripe
--- et cron de cloture — jamais depuis le navigateur).
+-- et cron de cloture, jamais depuis le navigateur).
 alter table manches enable row level security;
 alter table entries enable row level security;
 alter table stats enable row level security;

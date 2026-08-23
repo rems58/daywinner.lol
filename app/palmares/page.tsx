@@ -3,7 +3,7 @@ import { VuePalmares } from "@/components/vue-palmares";
 import type { Champion } from "@/lib/types";
 
 export const metadata = {
-  title: "Palmarès — daywinner.lol",
+  title: "Palmarès · daywinner.lol",
   description: "Le champion de chaque jour depuis le lancement de daywinner.lol.",
 };
 

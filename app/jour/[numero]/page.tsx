@@ -6,7 +6,7 @@ import type { Manche, Entree } from "@/lib/types";
 export async function generateMetadata({ params }: PageProps<"/jour/[numero]">) {
   const { numero } = await params;
   return {
-    title: `Jour #${numero} — daywinner.lol`,
+    title: `Jour #${numero} · daywinner.lol`,
     openGraph: { images: [`/api/og/${numero}`] },
   };
 }

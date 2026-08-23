@@ -53,7 +53,7 @@ export function BandeauStats() {
   }, []);
 
   const nombre = (valeur: number | null) =>
-    valeur === null ? "—" : new Intl.NumberFormat("fr-FR").format(valeur);
+    valeur === null ? "…" : new Intl.NumberFormat("fr-FR").format(valeur);
 
   return (
     <div className="flex justify-center px-6 pb-8">

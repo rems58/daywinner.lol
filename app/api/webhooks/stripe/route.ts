@@ -83,7 +83,7 @@ export async function POST(request: Request) {
     }
     // Sinon : paiement confirmé mais montant <= mise déjà enregistrée (double
     // soumission depuis deux onglets). L'argent est capté par Stripe, le rang
-    // n'est pas modifié — cas rare laissé au suivi manuel.
+    // n'est pas modifié, cas rare laissé au suivi manuel.
   } else {
     const { error } = await supabase.from("entries").insert({
       manche_id: manche.id,

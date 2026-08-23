@@ -16,18 +16,18 @@ shadcn/ui neutral en oklch, police Geist, accent `#e8442e`).
    npm install
    ```
 
-2. **Supabase** — crée un projet, puis dans l'éditeur SQL exécute
+2. **Supabase**, crée un projet, puis dans l'éditeur SQL exécute
    `supabase/migrations/001_manches_entries.sql` (crée `manches`, `entries`,
    la vue `champions`, active RLS + Realtime, amorce la manche #1).
 
-3. **Stripe** — mode test pour commencer. En local, pour recevoir les
+3. **Stripe**, mode test pour commencer. En local, pour recevoir les
    webhooks :
    ```bash
    stripe listen --forward-to localhost:3000/api/webhooks/stripe
    ```
    Colle le `whsec_...` affiché dans `STRIPE_WEBHOOK_SECRET`.
 
-4. **Variables d'environnement** — copie `.env.local.example` vers
+4. **Variables d'environnement**, copie `.env.local.example` vers
    `.env.local` et remplis les clés Supabase/Stripe. `TWITTER_*` est
    optionnel (boucle virale de fin de manche, no-op si absent).
 
@@ -57,13 +57,13 @@ fonction `incrementer_visiteurs()`).
 
 ## Aperçu du design sans Supabase
 
-Trois routes rejouent le site complet avec des données fictives — trois
-manches, dont deux clôturées — pour juger la maquette avant d'avoir branché
+Trois routes rejouent le site complet avec des données fictives, trois
+manches, dont deux clôturées, pour juger la maquette avant d'avoir branché
 la base :
 
-- `/apercu` — le jour en cours (classement live, chrono, formulaire)
-- `/apercu/palmares` — le palmarès avec les champions des jours 1 et 2
-- `/apercu/jour/[numero]` — l'archive d'une manche
+- `/apercu`, le jour en cours (classement live, chrono, formulaire)
+- `/apercu/palmares`, le palmarès avec les champions des jours 1 et 2
+- `/apercu/jour/[numero]`, l'archive d'une manche
 
 Un bandeau jaune permanent rappelle que rien n'est réel et permet de passer
 d'une page à l'autre. Ces routes renvoient un 404 en production : elles
@@ -81,7 +81,7 @@ prolongations anti-snipe créées par des mises tardives. `vercel.json`
 déclare un cron à la minute.
 
 ⚠️ **Le plan Vercel Hobby ne déclenche les crons qu'une fois par jour**, pas
-à la minute — la granularité `*/1 * * * *` nécessite un plan Pro. En
+à la minute, la granularité `*/1 * * * *` nécessite un plan Pro. En
 attendant, ou en alternative gratuite, un pinger externe (cron-job.org,
 GitHub Actions scheduled, etc.) peut appeler l'endpoint chaque minute avec
 `Authorization: Bearer $CRON_SECRET`.

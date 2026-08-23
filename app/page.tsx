@@ -54,7 +54,7 @@ export default async function Accueil({ searchParams }: PageProps<"/">) {
             }
           >
             {params.merci
-              ? "Paiement reçu — ta mise est en ligne. 🎉"
+              ? "Paiement reçu, ta mise est en ligne. 🎉"
               : "Paiement annulé, aucune mise enregistrée."}
           </p>
         </div>
@@ -75,7 +75,7 @@ export default async function Accueil({ searchParams }: PageProps<"/">) {
               Aucune manche en cours.
             </h1>
             <p className="mt-6 max-w-xl text-lg text-white/70">
-              La prochaine journée s&apos;ouvre dans un instant — recharge la
+              La prochaine journée s&apos;ouvre dans un instant. Recharge la
               page pour prendre la première place à 1 €.
             </p>
           </div>

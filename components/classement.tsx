@@ -27,7 +27,7 @@ export function Classement({
   const [pageDemandee, setPage] = useState(0);
 
   // Le classement bouge en direct : si la liste raccourcit, on borne au rendu
-  // plutot que de corriger l'etat apres coup — pas de page vide affichee.
+  // plutot que de corriger l'etat apres coup, pas de page vide affichee.
   const suivants = Math.max(entries.length - 1, 0);
   const nbPages = Math.max(Math.ceil(suivants / PAR_PAGE), 1);
   const page = Math.min(pageDemandee, nbPages - 1);

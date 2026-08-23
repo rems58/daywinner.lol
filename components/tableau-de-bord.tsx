@@ -12,7 +12,6 @@ import { Reveal, WordsReveal } from "@/components/fx";
 import { Navigation, PastilleFleche, TitreSection, ROUGE } from "@/components/habillage";
 import {
   MISE_MIN_CENTS,
-  MISE_MIN_PREMIERE_CENTS,
   formaterMontant,
 } from "@/lib/constantes";
 
@@ -94,7 +93,6 @@ export function TableauDeBord({
   }, []);
 
   const tenant = entries[0];
-  const miseMin = entries.length === 0 ? MISE_MIN_PREMIERE_CENTS : MISE_MIN_CENTS;
 
   return (
     <>
@@ -108,7 +106,7 @@ export function TableauDeBord({
         </div>
       </div>
 
-      {/* CLASSEMENT — chrono et appel a miser integres a l'intertitre */}
+      {/* CLASSEMENT : chrono et appel a miser integres a l'intertitre */}
       <section id="classement" className="scroll-mt-10 bg-white">
         <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 sm:py-16 lg:py-20">
           <TitreSection
@@ -137,7 +135,7 @@ export function TableauDeBord({
               <span className="text-[13px] text-zinc-500 sm:text-sm">
                 {tenant
                   ? `${tenant.project_name} tient le titre à ${formaterMontant(tenant.amount_cents)}`
-                  : `Tableau vierge · première mise dès ${formaterMontant(MISE_MIN_PREMIERE_CENTS)}`}
+                  : `Tableau vierge · première mise dès ${formaterMontant(MISE_MIN_CENTS)}`}
               </span>
             </div>
           </div>
@@ -152,7 +150,7 @@ export function TableauDeBord({
         </div>
       </section>
 
-      {/* MANIFESTE — le grand titre editorial, en second */}
+      {/* MANIFESTE : le grand titre editorial, en second */}
       <section className="relative overflow-hidden bg-encre text-white">
         <div className="cosmos-nebula absolute inset-0" aria-hidden />
         <div className="cosmos-stars cosmos-stars--far absolute inset-0" aria-hidden />
@@ -166,7 +164,7 @@ export function TableauDeBord({
           <Reveal delay={0.2}>
             <p className="mt-7 max-w-2xl text-lg leading-relaxed text-pretty text-white/80 sm:text-xl">
               Paie pour prendre le #1. Tout le monde peut te surenchérir
-              jusqu&apos;à la clôture — et si quelqu&apos;un mise dans les deux
+              jusqu&apos;à la clôture, et si quelqu&apos;un mise dans les deux
               dernières minutes, le chrono repart. Demain, tout revient à zéro.
             </p>
           </Reveal>
@@ -200,7 +198,7 @@ export function TableauDeBord({
                 <p className="max-w-[52ch] text-[15px] leading-relaxed text-zinc-600">
                   Le montant que tu paies est ton rang. La mise la plus haute
                   tient la première place jusqu&apos;à ce que quelqu&apos;un
-                  paie plus — ou jusqu&apos;à la clôture de la manche.
+                  paie plus, ou jusqu&apos;à la clôture de la manche.
                 </p>
                 <dl className="flex flex-col gap-5">
                   <div className="border-t-2 border-zinc-950 pt-4">
@@ -246,7 +244,6 @@ export function TableauDeBord({
             <Reveal delay={0.12}>
               <FormulaireMise
                 mancheClose={manche.closed_at !== null}
-                miseMinCents={miseMin}
               />
             </Reveal>
           </div>

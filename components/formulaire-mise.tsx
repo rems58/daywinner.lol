@@ -8,6 +8,7 @@ import {
   LOGO_POIDS_MAX,
   LOGO_TYPES,
   LOGO_URL_MAX,
+  MISE_MIN_CENTS,
   formaterMontant,
 } from "@/lib/constantes";
 
@@ -17,13 +18,7 @@ const CHAMP =
 const LIBELLE =
   "font-mono text-[11px] font-medium tracking-[0.2em] text-zinc-500 uppercase";
 
-export function FormulaireMise({
-  mancheClose,
-  miseMinCents,
-}: {
-  mancheClose: boolean;
-  miseMinCents: number;
-}) {
+export function FormulaireMise({ mancheClose }: { mancheClose: boolean }) {
   const [enCours, setEnCours] = useState(false);
   const [erreur, setErreur] = useState<string | null>(null);
   // Suivis pour l'apercu du logo : le miseur voit sa ligne avant de payer.
@@ -119,7 +114,7 @@ export function FormulaireMise({
           style={{ backgroundColor: ROUGE }}
           className="px-2 py-1 text-[10px] font-bold tracking-[0.14em] text-white uppercase"
         >
-          Dès {formaterMontant(miseMinCents)}
+          Dès {formaterMontant(MISE_MIN_CENTS)}
         </span>
       </div>
 
@@ -210,7 +205,7 @@ export function FormulaireMise({
           className={CHAMP}
         />
         <p className="text-[13px] leading-relaxed text-zinc-500">
-          Facultatif — PNG, JPEG, WebP, SVG ou GIF, 2 Mo maximum. Sans logo, on
+          Facultatif. PNG, JPEG, WebP, SVG ou GIF, 2 Mo maximum. Sans logo, on
           récupère automatiquement le favicon de ton domaine.
         </p>
       </div>
@@ -252,12 +247,18 @@ export function FormulaireMise({
           id="montant"
           name="montant"
           type="number"
-          min={miseMinCents / 100}
+          min={MISE_MIN_CENTS / 100}
           step={0.5}
           required
-          placeholder={String(miseMinCents / 100)}
+          placeholder={String(MISE_MIN_CENTS / 100)}
           className={`${CHAMP} text-2xl font-bold tabular-nums`}
         />
+        {/* Le navigateur se contente de "valeur superieure ou egale a 1" :
+            on rappelle la regle pour que le chiffre ne paraisse pas arbitraire. */}
+        <p className="text-[13px] leading-relaxed text-zinc-500">
+          Minimum {formaterMontant(MISE_MIN_CENTS)}, du début à la fin de la
+          manche. À montant égal, celui qui a misé le premier reste devant.
+        </p>
       </div>
 
       {erreur && (
