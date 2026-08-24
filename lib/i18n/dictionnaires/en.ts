@@ -128,7 +128,7 @@ export const en: Dictionnaire = {
     categoriePlaceholder: "Pick a category",
     montant: "Amount in euros",
     montantAide:
-      "Minimum {montant}, from start to finish of the round. On equal amounts, whoever bid first stays ahead.",
+      "Minimum {montant} per payment. Every payment adds to your total for the day. On equal totals, whoever paid first stays ahead.",
     miserEtPayer: "Bid and pay",
     redirection: "Redirecting to payment…",
     paiementNote:
@@ -181,7 +181,7 @@ export const en: Dictionnaire = {
         n: "01",
         titre: "The principle",
         corps: [
-          "Each round lasts about 24 hours. During that time, anyone can bid to take a spot on the leaderboard: the highest bid holds first place.",
+          "Each round lasts about 24 hours. During that time, anyone can pay to take a spot on the board: the highest total holds first place.",
           "You can be overtaken at any moment by someone who bids more. At closing, the leaderboard is frozen, the champion enters the hall of fame, and a new round starts from zero.",
         ],
       },
@@ -197,9 +197,9 @@ export const en: Dictionnaire = {
         n: "03",
         titre: "Minimum bid",
         corps: [
-          "{montant}, from start to finish of the round. The entry ticket never goes up: anyone can join the leaderboard for the price of a coffee, even when the top of the board is expensive.",
-          "On equal amounts, seniority decides: whoever bid first stays ahead. Matching a bid is not enough to overtake someone, you have to beat it.",
-          "You can outbid your own project at any time: submit the same URL with an amount above your previous bid, your entry climbs without creating a duplicate.",
+          "{montant} per payment, from the start of the round to the end. The entry ticket never rises: anyone can join the board for the price of a coffee, even when the top is expensive.",
+          "On equal totals, seniority decides: whoever paid first stays ahead. Matching a total is not enough to overtake someone, you have to beat it.",
+          "Your payments add up: submit the same URL again and the amount is added to your total for the day, without creating a duplicate. To get back ahead of someone, you only pay the difference.",
         ],
       },
       {
@@ -231,7 +231,6 @@ export const en: Dictionnaire = {
     logoHttps: "The logo link must be an https URL.",
     urlInvalide: "That address is not valid. Enter a domain (mysaas.com) or an @handle.",
     aucuneManche: "No round is active right now, try again in a moment.",
-    dejaMise: "Your current bid on this project is already {montant}. Offer more to outbid.",
     paiementImpossible: "Payment could not be started. Try again in a moment.",
     aucunFichier: "No file received.",
     tropEnvois: "Too many image uploads. Try again in an hour.",

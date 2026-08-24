@@ -128,7 +128,7 @@ export const it: Dictionnaire = {
     categoriePlaceholder: "Scegli una categoria",
     montant: "Importo in euro",
     montantAide:
-      "Minimo {montant}, dall'inizio alla fine del round. A parità di importo, chi ha puntato per primo resta davanti.",
+      "Minimo {montant} per pagamento. Ogni pagamento si somma al tuo totale del giorno. A parità di totale, resta davanti chi ha pagato per primo.",
     miserEtPayer: "Punta e paga",
     redirection: "Reindirizzamento al pagamento…",
     paiementNote:
@@ -181,7 +181,7 @@ export const it: Dictionnaire = {
         n: "01",
         titre: "Il principio",
         corps: [
-          "Ogni round dura circa 24 ore. In quel tempo chiunque può puntare per prendersi un posto in classifica: l'offerta più alta occupa il primo posto.",
+          "Ogni manche dura circa 24 ore. In quel tempo chiunque può pagare per prendere un posto in classifica: il totale più alto occupa il primo posto.",
           "Puoi essere superato in qualsiasi momento da chi punta di più. Alla chiusura la classifica si congela, il campione entra nell'albo d'oro e un nuovo round parte da zero.",
         ],
       },
@@ -197,9 +197,9 @@ export const it: Dictionnaire = {
         n: "03",
         titre: "Offerta minima",
         corps: [
-          "{montant}, dall'inizio alla fine del round. Il biglietto d'ingresso non sale mai: chiunque può entrare in classifica al prezzo di un caffè, anche quando la vetta è cara.",
-          "A parità di importo decide l'anzianità: chi ha puntato per primo resta davanti. Pareggiare un'offerta non basta per superare qualcuno, devi fare meglio.",
-          "Puoi rilanciare sul tuo stesso progetto quando vuoi: rimetti lo stesso URL con un importo superiore alla tua offerta precedente, la tua riga sale senza creare un doppione.",
+          "{montant} per pagamento, dall'inizio alla fine della manche. Il biglietto d'ingresso non sale mai: chiunque può entrare in classifica al prezzo di un caffè, anche quando la vetta è cara.",
+          "A parità di totale decide l'anzianità: chi ha pagato per primo resta davanti. Pareggiare un totale non basta per superare qualcuno, bisogna fare meglio.",
+          "I tuoi pagamenti si sommano: reinserisci la stessa URL e l'importo si aggiunge al tuo totale del giorno, senza creare doppioni. Per tornare davanti a qualcuno paghi solo la differenza.",
         ],
       },
       {
@@ -231,7 +231,6 @@ export const it: Dictionnaire = {
     logoHttps: "Il link del logo deve essere un URL https.",
     urlInvalide: "Questo indirizzo non è valido. Indica un dominio (miosaas.com) o un @handle.",
     aucuneManche: "Nessun round attivo al momento, riprova tra un istante.",
-    dejaMise: "La tua offerta attuale su questo progetto è già di {montant}. Offri di più per rilanciare.",
     paiementImpossible: "Impossibile avviare il pagamento. Riprova tra un istante.",
     aucunFichier: "Nessun file ricevuto.",
     tropEnvois: "Troppi caricamenti di immagini. Riprova tra un'ora.",

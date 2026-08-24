@@ -128,7 +128,7 @@ export const de: Dictionnaire = {
     categoriePlaceholder: "Kategorie auswählen",
     montant: "Betrag in Euro",
     montantAide:
-      "Mindestens {montant}, von Anfang bis Ende der Runde. Bei gleichem Betrag bleibt vorn, wer zuerst geboten hat.",
+      "Mindestens {montant} pro Zahlung. Jede Zahlung wird zu deinem Tagesbetrag addiert. Bei gleichem Betrag bleibt vorn, wer zuerst gezahlt hat.",
     miserEtPayer: "Bieten und bezahlen",
     redirection: "Weiterleitung zur Zahlung…",
     paiementNote:
@@ -181,7 +181,7 @@ export const de: Dictionnaire = {
         n: "01",
         titre: "Das Prinzip",
         corps: [
-          "Jede Runde dauert rund 24 Stunden. In dieser Zeit kann jeder bieten und sich einen Platz in der Rangliste sichern: Das höchste Gebot steht auf Platz eins.",
+          "Jede Runde dauert etwa 24 Stunden. In dieser Zeit kann jeder zahlen, um einen Platz in der Rangliste zu belegen: Der höchste Gesamtbetrag steht auf Platz eins.",
           "Jederzeit kann dich jemand mit einem höheren Gebot überholen. Zum Schluss wird die Rangliste eingefroren, der Champion kommt in die Bestenliste, und eine neue Runde startet bei null.",
         ],
       },
@@ -197,9 +197,9 @@ export const de: Dictionnaire = {
         n: "03",
         titre: "Mindestgebot",
         corps: [
-          "{montant}, von Anfang bis Ende der Runde. Das Eintrittsticket wird nie teurer: Jeder kann für den Preis eines Kaffees in die Rangliste einsteigen, auch wenn oben viel Geld liegt.",
-          "Bei gleichem Betrag entscheidet die Reihenfolge: Wer zuerst geboten hat, bleibt vorn. Gleichziehen reicht also nicht, um jemanden zu überholen, du musst mehr bieten.",
-          "Du kannst dein eigenes Projekt jederzeit überbieten: Gib dieselbe URL mit einem höheren Betrag als zuvor ein, deine Zeile steigt, ohne ein Duplikat anzulegen.",
+          "{montant} pro Zahlung, vom Anfang bis zum Ende der Runde. Der Einstiegspreis steigt nie: Jeder kann für den Preis eines Kaffees in die Rangliste einsteigen, auch wenn die Spitze teuer ist.",
+          "Bei gleichem Gesamtbetrag entscheidet die Reihenfolge: Wer zuerst gezahlt hat, bleibt vorn. Einen Gesamtbetrag nur zu erreichen genügt also nicht, du musst ihn übertreffen.",
+          "Deine Zahlungen addieren sich: Reiche dieselbe URL erneut ein, und der Betrag wird zu deinem Tagesbetrag addiert, ohne Dublette. Um jemanden wieder zu überholen, zahlst du nur die Differenz.",
         ],
       },
       {
@@ -231,7 +231,6 @@ export const de: Dictionnaire = {
     logoHttps: "Der Logo-Link muss eine https-URL sein.",
     urlInvalide: "Diese Adresse ist ungültig. Gib eine Domain (meinsaas.com) oder ein @handle an.",
     aucuneManche: "Gerade läuft keine Runde, versuch es gleich nochmal.",
-    dejaMise: "Dein aktuelles Gebot für dieses Projekt liegt schon bei {montant}. Biete mehr, um zu überbieten.",
     paiementImpossible: "Die Zahlung konnte nicht gestartet werden. Versuch es gleich nochmal.",
     aucunFichier: "Keine Datei empfangen.",
     tropEnvois: "Zu viele Bild-Uploads. Versuch es in einer Stunde nochmal.",

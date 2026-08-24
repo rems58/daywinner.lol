@@ -97,26 +97,11 @@ export async function POST(request: Request) {
     );
   }
 
-  // Le plancher ne depend plus du remplissage du tableau : une entree coute
-  // toujours MISE_MIN_CENTS, deja verifie plus haut. Seule contrainte
-  // restante : rejouer sur le meme projet doit faire monter sa mise.
-  const { data: miseExistante } = await supabase
-    .from("entries")
-    .select("amount_cents")
-    .eq("manche_id", manche.id)
-    .eq("url_normalized", url_normalized)
-    .maybeSingle();
-
-  if (miseExistante && amount_cents <= miseExistante.amount_cents) {
-    return NextResponse.json(
-      {
-        erreur: remplir(d.api.dejaMise, {
-          montant: formaterMontant(miseExistante.amount_cents, locale),
-        }),
-      },
-      { status: 400 }
-    );
-  }
+  // Aucun montant plancher lie a une mise precedente : les paiements
+  // s'additionnent, donc un versement de 1 EUR sur un projet qui en a deja
+  // 1900 fait simplement monter son total a 1901. Exiger de depasser la mise
+  // precedente, comme avant, obligeait a tout repayer d'un coup et bloquait
+  // le produit des que les enjeux montaient.
 
   // Origine figee cote serveur : la deduire de `request.url` la rendrait
   // dependante de l'en-tete Host, donc influencable par l'appelant.

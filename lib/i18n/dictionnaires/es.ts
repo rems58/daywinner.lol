@@ -128,7 +128,7 @@ export const es: Dictionnaire = {
     categoriePlaceholder: "Elegir una categoría",
     montant: "Importe en euros",
     montantAide:
-      "Mínimo {montant}, de principio a fin de la ronda. A igual importe, quien pujó primero se queda delante.",
+      "Mínimo {montant} por pago. Cada pago se suma a tu total del día. A igualdad de total, queda delante quien pagó primero.",
     miserEtPayer: "Pujar y pagar",
     redirection: "Redirigiendo al pago…",
     paiementNote:
@@ -181,7 +181,7 @@ export const es: Dictionnaire = {
         n: "01",
         titre: "El principio",
         corps: [
-          "Cada ronda dura unas 24 horas. Durante ese tiempo, cualquiera puede pujar para ocupar un puesto en la clasificación: la puja más alta ocupa el primer puesto.",
+          "Cada manga dura unas 24 horas. Durante ese tiempo cualquiera puede pagar para ocupar un puesto en la clasificación: el total más alto ocupa el primer puesto.",
           "Alguien que pague más puede superarte en cualquier momento. Al cierre, la clasificación se congela, el campeón entra en el palmarés y una nueva ronda empieza desde cero.",
         ],
       },
@@ -197,9 +197,9 @@ export const es: Dictionnaire = {
         n: "03",
         titre: "Puja mínima",
         corps: [
-          "{montant}, de principio a fin de la ronda. La entrada nunca sube: cualquiera puede entrar en la clasificación por el precio de un café, incluso cuando la parte alta del tablero está cara.",
-          "A igual importe manda la antigüedad: quien pujó primero se queda delante. Igualar una puja no basta para adelantar a nadie, hay que superarla.",
-          "Puedes subir la puja de tu propio proyecto cuando quieras: vuelve a enviar la misma URL con un importe superior al anterior y tu línea sube sin crear ningún duplicado.",
+          "{montant} por pago, del principio al final de la manga. El billete de entrada nunca sube: cualquiera puede entrar en la clasificación por el precio de un café, aunque la cima esté cara.",
+          "A igualdad de total decide la antigüedad: quien pagó primero queda delante. Igualar un total no basta para adelantar a alguien, hay que superarlo.",
+          "Tus pagos se suman: vuelve a poner la misma URL y el importe se añade a tu total del día, sin crear duplicados. Para volver a adelantar a alguien solo pagas la diferencia.",
         ],
       },
       {
@@ -231,7 +231,6 @@ export const es: Dictionnaire = {
     logoHttps: "El enlace del logo debe ser una URL https.",
     urlInvalide: "Esta dirección no es válida. Indica un dominio (misaas.com) o un @handle.",
     aucuneManche: "No hay ninguna ronda activa ahora mismo, inténtalo en un momento.",
-    dejaMise: "Tu puja actual en este proyecto ya es de {montant}. Ofrece más para pujar por encima.",
     paiementImpossible: "No se ha podido iniciar el pago. Inténtalo en un momento.",
     aucunFichier: "No se ha recibido ningún archivo.",
     tropEnvois: "Demasiadas subidas de imágenes. Inténtalo dentro de una hora.",

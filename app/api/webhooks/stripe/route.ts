@@ -97,44 +97,49 @@ export async function POST(request: Request) {
     .maybeSingle();
 
   if (miseExistante) {
-    if (amount_cents > miseExistante.amount_cents) {
-      // Une entree est identifiee par son URL, et rien ne prouve que celui
-      // qui paie possede le site vise. Laisser la surenchere reecrire le nom,
-      // l'accroche et le logo permettrait a un tiers d'effacer pour 1 EUR la
-      // fiche qu'un annonceur vient d'acheter, tout en gardant le lien
-      // pointant vers son site. On ne reecrit le contenu affiche que pour
-      // l'acheteur d'origine.
-      const { data: privee } = await supabase
-        .from("entries_privees")
-        .select("submitter_email")
-        .eq("entry_id", miseExistante.id)
-        .maybeSingle();
+    // Les paiements s'ADDITIONNENT sur la duree de la manche : le rang est le
+    // total depense, pas le dernier montant paye.
+    //
+    // Remplacer plutot qu'additionner rendait le produit inutilisable des que
+    // les montants montaient. Quelqu'un a 1900 EUR, double par un concurrent a
+    // 2000, devait repayer 2001 EUR d'un coup pour repasser devant, soit 3901
+    // EUR verses pour afficher 2001. Personne ne fait ca. En cumulant, il paie
+    // la difference, ce qui est la mecanique qui fait vivre ce genre de site.
+    const nouveauTotal = miseExistante.amount_cents + amount_cents;
 
-      const proprietaire = privee?.submitter_email?.trim().toLowerCase() ?? null;
-      const memeAcheteur = emailPayeur !== null && proprietaire === emailPayeur;
+    // Une entree est identifiee par son URL, et rien ne prouve que celui qui
+    // paie possede le site vise. Laisser un paiement reecrire le nom,
+    // l'accroche et le logo permettrait a un tiers d'effacer pour 1 EUR la
+    // fiche qu'un annonceur vient d'acheter, tout en gardant le lien pointant
+    // vers son site. On ne reecrit le contenu affiche que pour l'acheteur
+    // d'origine, mais son total monte quand meme.
+    const { data: privee } = await supabase
+      .from("entries_privees")
+      .select("submitter_email")
+      .eq("entry_id", miseExistante.id)
+      .maybeSingle();
 
-      const maj: Record<string, unknown> = {
-        amount_cents,
-        stripe_session_id: session.id,
-      };
-      if (memeAcheteur) {
-        maj.project_name = metadata.project_name;
-        maj.tagline = metadata.tagline || null;
-        maj.logo_url = metadata.logo_url || null;
-        maj.consentement_retractation_at = metadata.consentement_at || null;
-        maj.cgv_version = metadata.cgv_version || null;
-      } else {
-        console.warn(
-          "Surenchère par un autre acheteur : montant relevé, contenu conservé",
-          miseExistante.id
-        );
-      }
+    const proprietaire = privee?.submitter_email?.trim().toLowerCase() ?? null;
+    const memeAcheteur = emailPayeur !== null && proprietaire === emailPayeur;
 
-      await supabase.from("entries").update(maj).eq("id", miseExistante.id);
+    const maj: Record<string, unknown> = {
+      amount_cents: nouveauTotal,
+      stripe_session_id: session.id,
+    };
+    if (memeAcheteur) {
+      maj.project_name = metadata.project_name;
+      maj.tagline = metadata.tagline || null;
+      maj.logo_url = metadata.logo_url || null;
+      maj.consentement_retractation_at = metadata.consentement_at || null;
+      maj.cgv_version = metadata.cgv_version || null;
+    } else {
+      console.warn(
+        "Paiement par un autre acheteur : total relevé, contenu conservé",
+        miseExistante.id
+      );
     }
-    // Sinon : paiement confirmé mais montant <= mise déjà enregistrée (double
-    // soumission depuis deux onglets). L'argent est capté par Stripe, le rang
-    // n'est pas modifié, cas rare laissé au suivi manuel.
+
+    await supabase.from("entries").update(maj).eq("id", miseExistante.id);
   } else {
     const { data: creee, error } = await supabase
       .from("entries")

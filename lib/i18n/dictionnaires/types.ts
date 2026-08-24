@@ -158,7 +158,6 @@ export type Dictionnaire = {
     logoHttps: string;
     urlInvalide: string;
     aucuneManche: string;
-    dejaMise: string; // {montant}
     paiementImpossible: string;
     aucunFichier: string;
     tropEnvois: string;

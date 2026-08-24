@@ -128,7 +128,7 @@ export const fr: Dictionnaire = {
     categoriePlaceholder: "Choisir une catégorie",
     montant: "Montant en euros",
     montantAide:
-      "Minimum {montant}, du début à la fin de la manche. À montant égal, celui qui a misé le premier reste devant.",
+      "Minimum {montant} par paiement. Chaque paiement s'ajoute à ton total du jour. À total égal, celui qui a payé le premier reste devant.",
     miserEtPayer: "Miser et payer",
     redirection: "Redirection vers le paiement…",
     paiementNote:
@@ -181,7 +181,7 @@ export const fr: Dictionnaire = {
         n: "01",
         titre: "Le principe",
         corps: [
-          "Chaque manche dure environ 24 heures. Pendant ce temps, n'importe qui peut miser pour prendre une place dans le classement : la mise la plus haute occupe la première place.",
+          "Chaque manche dure environ 24 heures. Pendant ce temps, n'importe qui peut payer pour prendre une place dans le classement : le total le plus élevé occupe la première place.",
           "Tu peux être dépassé à tout moment par quelqu'un qui mise plus. À la clôture, le classement est figé, le champion entre au palmarès, et une nouvelle manche démarre à zéro.",
         ],
       },
@@ -197,9 +197,9 @@ export const fr: Dictionnaire = {
         n: "03",
         titre: "Mise minimale",
         corps: [
-          "{montant}, du début à la fin de la manche. Le ticket d'entrée ne monte jamais : n'importe qui peut rejoindre le classement pour le prix d'un café, même quand le haut du tableau est cher.",
-          "À montant égal, c'est l'ancienneté qui départage : celui qui a misé le premier reste devant. Égaler une mise ne suffit donc pas pour doubler quelqu'un, il faut faire mieux.",
-          "Tu peux surenchérir sur ton propre projet à tout moment : remets la même URL avec un montant supérieur à ta mise précédente, ta ligne monte sans créer de doublon.",
+          "{montant} par paiement, du début à la fin de la manche. Le ticket d'entrée ne monte jamais : n'importe qui peut rejoindre le classement pour le prix d'un café, même quand le haut du tableau est cher.",
+          "À total égal, c'est l'ancienneté qui départage : celui qui a payé le premier reste devant. Égaler un total ne suffit donc pas pour doubler quelqu'un, il faut faire mieux.",
+          "Tes paiements s'additionnent : remets la même URL et le montant s'ajoute à ton total du jour, sans créer de doublon. Pour repasser devant quelqu'un, tu ne paies que la différence.",
         ],
       },
       {
@@ -231,7 +231,6 @@ export const fr: Dictionnaire = {
     logoHttps: "Le lien du logo doit être une URL https.",
     urlInvalide: "Cette adresse n'est pas valide. Indique un domaine (monsaas.com) ou un @handle.",
     aucuneManche: "Aucune manche active pour le moment, réessaie dans un instant.",
-    dejaMise: "Ta mise actuelle sur ce projet est déjà de {montant}. Propose plus pour surenchérir.",
     paiementImpossible: "Le paiement n'a pas pu être lancé. Réessaie dans un instant.",
     aucunFichier: "Aucun fichier reçu.",
     tropEnvois: "Trop d'envois d'images. Réessaie dans une heure.",
