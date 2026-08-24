@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { ROUGE } from "@/components/habillage";
 import { LogoProjet } from "@/components/logo-projet";
 import {
@@ -10,11 +10,13 @@ import {
   LOGO_URL_MAX,
   MISE_MIN_CENTS,
   formaterMontant,
+  normaliserUrl,
   remplir,
 } from "@/lib/constantes";
 import type { Dictionnaire } from "@/lib/i18n/dictionnaires/types";
 import type { Locale } from "@/lib/i18n/config";
 import type { DictionnaireLegal } from "@/lib/i18n/dictionnaires/legal-types";
+import type { Entree } from "@/lib/types";
 
 const CHAMP =
   "w-full rounded-sm border border-zinc-300 bg-white px-4 py-3 text-[15px] text-zinc-950 outline-none transition-colors duration-300 placeholder:text-zinc-400 focus:border-zinc-950";
@@ -27,11 +29,14 @@ export function FormulaireMise({
   dl,
   locale,
   mancheClose,
+  entries = [],
 }: {
   d: Dictionnaire;
   dl: DictionnaireLegal;
   locale: Locale;
   mancheClose: boolean;
+  /** Classement en cours, pour afficher le total deja atteint par le projet. */
+  entries?: Entree[];
 }) {
   const [enCours, setEnCours] = useState(false);
   const [erreur, setErreur] = useState<string | null>(null);
@@ -40,8 +45,21 @@ export function FormulaireMise({
   const [url, setUrl] = useState("");
   const [logo, setLogo] = useState("");
   const [envoiLogo, setEnvoiLogo] = useState(false);
+  const [montant, setMontant] = useState("");
   // Non pre-cochee : un consentement pre-coche n'est pas un consentement expres.
   const [renonce, setRenonce] = useState(false);
+
+  // Les paiements s'additionnent : sans ce rappel, quelqu'un qui a deja
+  // 1900 EUR et saisit 200 croirait retomber a 200. On lui montre le total
+  // qu'il atteindra reellement.
+  const dejaMise = useMemo(() => {
+    const cle = normaliserUrl(url);
+    if (!cle) return 0;
+    return entries.find((e) => e.url_normalized === cle)?.amount_cents ?? 0;
+  }, [url, entries]);
+
+  const ajout = Math.round(Number(montant) * 100);
+  const ajoutValide = Number.isFinite(ajout) && ajout > 0;
 
   async function televerserLogo(evenement: React.ChangeEvent<HTMLInputElement>) {
     const fichier = evenement.target.files?.[0];
@@ -274,8 +292,27 @@ export function FormulaireMise({
           step={0.5}
           required
           placeholder={String(MISE_MIN_CENTS / 100)}
+          value={montant}
+          onChange={(e) => setMontant(e.target.value)}
           className={`${CHAMP} text-2xl font-bold tabular-nums`}
         />
+
+        {dejaMise > 0 && (
+          <div className="flex flex-col gap-1 rounded-md bg-zinc-50 px-4 py-3 ring-1 ring-zinc-950/5">
+            <span className="flex items-baseline justify-between gap-4 text-[13px] text-zinc-500">
+              {d.formulaire.dejaSurCeProjet}
+              <span className="font-mono tabular-nums">
+                {formaterMontant(dejaMise, locale)}
+              </span>
+            </span>
+            <span className="flex items-baseline justify-between gap-4 text-[15px] font-bold">
+              {d.formulaire.apresCePaiement}
+              <span className="font-mono tabular-nums" style={{ color: ROUGE }}>
+                {formaterMontant(dejaMise + (ajoutValide ? ajout : 0), locale)}
+              </span>
+            </span>
+          </div>
+        )}
         {/* Le navigateur se contente de "valeur superieure ou egale a 1" :
             on rappelle la regle pour que le chiffre ne paraisse pas arbitraire. */}
         <p className="text-[13px] leading-relaxed text-zinc-500">

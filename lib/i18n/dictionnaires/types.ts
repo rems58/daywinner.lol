@@ -99,6 +99,8 @@ export type Dictionnaire = {
     categoriePlaceholder: string;
     montant: string;
     montantAide: string; // {montant}
+    dejaSurCeProjet: string;
+    apresCePaiement: string;
     miserEtPayer: string;
     redirection: string;
     paiementNote: string;

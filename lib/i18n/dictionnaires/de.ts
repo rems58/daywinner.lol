@@ -129,6 +129,8 @@ export const de: Dictionnaire = {
     montant: "Betrag in Euro",
     montantAide:
       "Mindestens {montant} pro Zahlung. Jede Zahlung wird zu deinem Tagesbetrag addiert. Bei gleichem Betrag bleibt vorn, wer zuerst gezahlt hat.",
+    dejaSurCeProjet: "Bereits auf diesem Projekt",
+    apresCePaiement: "Nach dieser Zahlung",
     miserEtPayer: "Bieten und bezahlen",
     redirection: "Weiterleitung zur Zahlung…",
     paiementNote:

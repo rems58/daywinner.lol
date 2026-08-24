@@ -129,6 +129,8 @@ export const it: Dictionnaire = {
     montant: "Importo in euro",
     montantAide:
       "Minimo {montant} per pagamento. Ogni pagamento si somma al tuo totale del giorno. A parità di totale, resta davanti chi ha pagato per primo.",
+    dejaSurCeProjet: "Già su questo progetto",
+    apresCePaiement: "Dopo questo pagamento",
     miserEtPayer: "Punta e paga",
     redirection: "Reindirizzamento al pagamento…",
     paiementNote:

@@ -232,6 +232,10 @@ export function TableauDeBord({
                 dl={dl}
                 locale={locale}
                 mancheClose={manche.closed_at !== null}
+                // Le classement est deja tenu a jour en direct ici : le
+                // formulaire y lit le total en cours du projet saisi, sans
+                // requete supplementaire.
+                entries={entries}
               />
             </Reveal>
           </div>
