@@ -76,6 +76,31 @@ export async function POST(request: Request) {
     return NextResponse.json({ recu: true });
   }
 
+  // Verrou d'idempotence, pose AVANT toute ecriture.
+  //
+  // Les paiements s'additionnant, rejouer un evenement ajouterait une seconde
+  // fois le meme montant. Stripe rejoue des que la reponse tarde ou echoue, et
+  // son tableau de bord offre un bouton "Renvoyer" : sans ce verrou, un total
+  // pourrait grimper sans qu'aucun argent supplementaire n'ait ete verse.
+  //
+  // La cle primaire de `paiements` fait le travail : la seconde insertion
+  // echoue en 23505 et on s'arrete la, avant meme la regle anti-snipe.
+  const { error: erreurJournal } = await supabase.from("paiements").insert({
+    stripe_session_id: session.id,
+    manche_id: manche.id,
+    url_normalized: metadata.url_normalized,
+    amount_cents,
+  });
+
+  if (erreurJournal) {
+    if (erreurJournal.code === "23505") {
+      console.warn("Événement Stripe déjà traité, ignoré", session.id);
+      return NextResponse.json({ recu: true, deja_traite: true });
+    }
+    console.error("Échec journalisation du paiement", erreurJournal);
+    return NextResponse.json({ erreur: "Échec journalisation." }, { status: 500 });
+  }
+
   // Regle anti-snipe : une mise confirmee dans les 2 dernieres minutes
   // prolonge la manche de 2 minutes, comme dans une vraie salle des ventes.
   const finActuelle = new Date(manche.ends_at).getTime();
@@ -164,6 +189,9 @@ export async function POST(request: Request) {
     // le même événement, on l'ignore silencieusement (déjà traité).
     if (error && error.code !== "23505") {
       console.error("Échec insertion mise", error);
+      // Le verrou est retire, sans quoi le rejeu de Stripe serait ignore et le
+      // paiement perdu pour de bon.
+      await supabase.from("paiements").delete().eq("stripe_session_id", session.id);
       return NextResponse.json({ erreur: "Échec insertion." }, { status: 500 });
     }
 
