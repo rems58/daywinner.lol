@@ -1,10 +1,22 @@
 import { createHmac, randomBytes } from "crypto";
 
 /**
- * Boucle virale optionnelle : poste le champion du jour sur X. N'importe
- * quelle variable d'env manquante => no-op silencieux (best-effort), ne
- * bloque jamais la clôture de la manche.
+ * Boucle virale : poste le champion du jour sur X.
+ *
+ * A L'ARRET par decision du proprietaire du site.
+ *
+ * L'interrupteur ci-dessous est volontairement explicite et prime sur tout le
+ * reste. Se reposer sur la seule absence des cles serait fragile : une
+ * variable ajoutee par megarde dans le tableau de bord d'hebergement suffirait
+ * a remettre le site a publier sans que personne ne l'ait decide.
+ *
+ * Pour reactiver : repasser TWEET_CHAMPION_ACTIF a true ET renseigner les
+ * quatre variables TWITTER_*. Voir .env.local.example.
+ *
+ * Dans tous les cas la fonction reste sans effet de bord : elle ne bloque
+ * jamais la cloture de la manche, quoi qu'il arrive.
  */
+export const TWEET_CHAMPION_ACTIF = false;
 
 function pourcentEncoder(valeur: string) {
   return encodeURIComponent(valeur).replace(
@@ -63,6 +75,10 @@ function construireEnTeteOAuth1(
 }
 
 export async function posterTweetChampion(texte: string) {
+  if (!TWEET_CHAMPION_ACTIF) {
+    return { poste: false, raison: "boucle virale désactivée" } as const;
+  }
+
   const apiKey = process.env.TWITTER_API_KEY;
   const apiKeySecret = process.env.TWITTER_API_KEY_SECRET;
   const accessToken = process.env.TWITTER_ACCESS_TOKEN;
