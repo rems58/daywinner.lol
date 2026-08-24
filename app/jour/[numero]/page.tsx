@@ -7,7 +7,7 @@ import { construireMeta } from "@/lib/seo";
 import { urlAbsolue } from "@/lib/site";
 import { DonneesStructurees } from "@/components/donnees-structurees";
 import { VueJour } from "@/components/vue-jour";
-import type { Manche, Entree } from "@/lib/types";
+import { COLONNES_ENTREE, type Manche, type Entree } from "@/lib/types";
 
 export async function generateMetadata({ params }: PageProps<"/jour/[numero]">) {
   const { numero } = await params;
@@ -55,7 +55,7 @@ export default async function Jour({ params }: PageProps<"/jour/[numero]">) {
 
   const { data: entries } = await supabase
     .from("entries")
-    .select("*")
+    .select(COLONNES_ENTREE)
     .eq("manche_id", manche.id)
     .order("amount_cents", { ascending: false })
     .order("created_at", { ascending: true })

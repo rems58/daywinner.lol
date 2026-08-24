@@ -133,7 +133,7 @@ export const it: Dictionnaire = {
     redirection: "Reindirizzamento al pagamento…",
     paiementNote:
       "Pagamento con carta tramite Stripe. Offerta non rimborsabile, posto valido fino alla chiusura del round.",
-    erreurFormat: "Formati accettati: PNG, JPEG, WebP, SVG o GIF.",
+    erreurFormat: "Formati accettati: PNG, JPEG, WebP o GIF.",
     erreurPoids: "Immagine troppo pesante (massimo 2 MB).",
     erreurEnvoiLogo: "Il caricamento non è riuscito, riprova.",
     erreurServeur: "Il server ha risposto con un errore ({statut}).",
@@ -229,6 +229,7 @@ export const it: Dictionnaire = {
     categorieInvalide: "Categoria non valida.",
     miseMinimale: "Offerta minima: {montant}.",
     logoHttps: "Il link del logo deve essere un URL https.",
+    urlInvalide: "Questo indirizzo non è valido. Indica un dominio (miosaas.com) o un @handle.",
     aucuneManche: "Nessun round attivo al momento, riprova tra un istante.",
     dejaMise: "La tua offerta attuale su questo progetto è già di {montant}. Offri di più per rilanciare.",
     paiementImpossible: "Impossibile avviare il pagamento. Riprova tra un istante.",

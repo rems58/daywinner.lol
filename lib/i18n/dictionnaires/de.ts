@@ -133,7 +133,7 @@ export const de: Dictionnaire = {
     redirection: "Weiterleitung zur Zahlung…",
     paiementNote:
       "Kartenzahlung über Stripe. Gebot nicht erstattungsfähig, der Platz gilt bis zum Ende der Runde.",
-    erreurFormat: "Erlaubte Formate: PNG, JPEG, WebP, SVG oder GIF.",
+    erreurFormat: "Zulässige Formate: PNG, JPEG, WebP oder GIF.",
     erreurPoids: "Bild zu groß (maximal 2 MB).",
     erreurEnvoiLogo: "Der Upload ist fehlgeschlagen, versuch es nochmal.",
     erreurServeur: "Der Server hat einen Fehler gemeldet ({statut}).",
@@ -229,6 +229,7 @@ export const de: Dictionnaire = {
     categorieInvalide: "Ungültige Kategorie.",
     miseMinimale: "Mindestgebot: {montant}.",
     logoHttps: "Der Logo-Link muss eine https-URL sein.",
+    urlInvalide: "Diese Adresse ist ungültig. Gib eine Domain (meinsaas.com) oder ein @handle an.",
     aucuneManche: "Gerade läuft keine Runde, versuch es gleich nochmal.",
     dejaMise: "Dein aktuelles Gebot für dieses Projekt liegt schon bei {montant}. Biete mehr, um zu überbieten.",
     paiementImpossible: "Die Zahlung konnte nicht gestartet werden. Versuch es gleich nochmal.",

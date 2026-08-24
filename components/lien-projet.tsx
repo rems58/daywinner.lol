@@ -1,7 +1,6 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { creerClientNavigateur } from "@/lib/supabase/client";
 
 /**
  * Lien sortant vers le site d'un annonceur, avec comptage du clic.
@@ -31,9 +30,13 @@ export function LienProjet({
       onClick={() => {
         // Volontairement sans await : l'ouverture de l'onglet ne doit pas
         // attendre le reseau. Un clic perdu vaut mieux qu'un lien lent.
-        void creerClientNavigateur()
-          .rpc("incrementer_clics", { entree: entreeId })
-          .then(() => undefined);
+        // `keepalive` laisse la requete aboutir meme si l'onglet change.
+        void fetch("/api/clic", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ entree: entreeId }),
+          keepalive: true,
+        }).catch(() => undefined);
       }}
     >
       {children}

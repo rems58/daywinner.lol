@@ -156,6 +156,7 @@ export type Dictionnaire = {
     categorieInvalide: string;
     miseMinimale: string; // {montant}
     logoHttps: string;
+    urlInvalide: string;
     aucuneManche: string;
     dejaMise: string; // {montant}
     paiementImpossible: string;

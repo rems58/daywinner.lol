@@ -133,7 +133,7 @@ export const en: Dictionnaire = {
     redirection: "Redirecting to payment…",
     paiementNote:
       "Card payment via Stripe. Bids are non-refundable, your spot lasts until the round closes.",
-    erreurFormat: "Accepted formats: PNG, JPEG, WebP, SVG or GIF.",
+    erreurFormat: "Accepted formats: PNG, JPEG, WebP or GIF.",
     erreurPoids: "Image too heavy (2 MB max).",
     erreurEnvoiLogo: "Upload failed, try again.",
     erreurServeur: "The server returned an error ({statut}).",
@@ -229,6 +229,7 @@ export const en: Dictionnaire = {
     categorieInvalide: "Invalid category.",
     miseMinimale: "Minimum bid: {montant}.",
     logoHttps: "The logo link must be an https URL.",
+    urlInvalide: "That address is not valid. Enter a domain (mysaas.com) or an @handle.",
     aucuneManche: "No round is active right now, try again in a moment.",
     dejaMise: "Your current bid on this project is already {montant}. Offer more to outbid.",
     paiementImpossible: "Payment could not be started. Try again in a moment.",

@@ -21,6 +21,18 @@ export type Entree = {
   created_at: string;
 };
 
+/**
+ * Colonnes de `entries` lisibles publiquement, dans l'ordre du type `Entree`.
+ *
+ * A tenir synchronisee avec le `grant select (...)` de la migration 004 : un
+ * `select("*")` echouerait desormais, la lecture n'etant plus accordee sur la
+ * table entiere mais colonne par colonne. Les colonnes absentes ici
+ * (identifiant de session Stripe, preuve de consentement) n'ont rien a faire
+ * dans un navigateur.
+ */
+export const COLONNES_ENTREE =
+  "id, manche_id, project_name, project_url, url_normalized, category, tagline, logo_url, amount_cents, clics, created_at";
+
 export type Champion = {
   numero: number;
   started_at: string;

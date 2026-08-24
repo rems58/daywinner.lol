@@ -133,7 +133,7 @@ export const fr: Dictionnaire = {
     redirection: "Redirection vers le paiement…",
     paiementNote:
       "Paiement par carte via Stripe. Mise non remboursable, place valable jusqu'à la clôture de la manche.",
-    erreurFormat: "Format accepté : PNG, JPEG, WebP, SVG ou GIF.",
+    erreurFormat: "Format accepté : PNG, JPEG, WebP ou GIF.",
     erreurPoids: "Image trop lourde (2 Mo maximum).",
     erreurEnvoiLogo: "Le téléversement a échoué, réessaie.",
     erreurServeur: "Le serveur a répondu une erreur ({statut}).",
@@ -229,6 +229,7 @@ export const fr: Dictionnaire = {
     categorieInvalide: "Catégorie invalide.",
     miseMinimale: "Mise minimale : {montant}.",
     logoHttps: "Le lien du logo doit être une URL https.",
+    urlInvalide: "Cette adresse n'est pas valide. Indique un domaine (monsaas.com) ou un @handle.",
     aucuneManche: "Aucune manche active pour le moment, réessaie dans un instant.",
     dejaMise: "Ta mise actuelle sur ce projet est déjà de {montant}. Propose plus pour surenchérir.",
     paiementImpossible: "Le paiement n'a pas pu être lancé. Réessaie dans un instant.",

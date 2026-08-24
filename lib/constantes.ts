@@ -122,13 +122,39 @@ export function normaliserUrl(url: string) {
     .replace(/\/+$/, "");
 }
 
+export const PROJECT_URL_MAX = 200;
+
+/**
+ * URL de projet acceptable. Le champ accepte aussi bien un domaine qu'un
+ * @handle de reseau social, donc on ne peut pas exiger un `new URL()`
+ * complet. On verrouille en revanche le schema : un lien sortant n'a aucune
+ * raison de porter "javascript:", "data:" ou "vbscript:".
+ */
+export function projectUrlValide(url: string) {
+  const brut = url.trim();
+  if (!brut || brut.length > PROJECT_URL_MAX) return false;
+
+  const schema = brut.match(/^([a-z][a-z0-9+.-]*):/i);
+  if (schema && !/^https?$/i.test(schema[1])) return false;
+
+  // Un @handle n'a pas de domaine exploitable : accepte tel quel, l'affichage
+  // retombe sur le monogramme.
+  if (/^@[a-z0-9_.]{1,50}$/i.test(brut)) return true;
+
+  const hote = normaliserUrl(brut).split("/")[0];
+  return /^[a-z0-9-]+(\.[a-z0-9-]+)+$/i.test(hote);
+}
+
 export const LOGO_URL_MAX = 300;
 export const LOGO_POIDS_MAX = 2 * 1024 * 1024; // 2 Mio
+// Le SVG est volontairement absent : c'est un document, pas une image inerte.
+// Depose tel quel dans un depot public, il devient une page hebergee sous le
+// domaine du projet, exploitable en hameconnage. Les formats matriciels
+// couvrent le besoin d'un logo.
 export const LOGO_TYPES = [
   "image/png",
   "image/jpeg",
   "image/webp",
-  "image/svg+xml",
   "image/gif",
 ] as const;
 

@@ -133,7 +133,7 @@ export const es: Dictionnaire = {
     redirection: "Redirigiendo al pago…",
     paiementNote:
       "Pago con tarjeta vía Stripe. Puja no reembolsable, puesto válido hasta el cierre de la ronda.",
-    erreurFormat: "Formato aceptado: PNG, JPEG, WebP, SVG o GIF.",
+    erreurFormat: "Formatos aceptados: PNG, JPEG, WebP o GIF.",
     erreurPoids: "Imagen demasiado pesada (2 MB máximo).",
     erreurEnvoiLogo: "La subida ha fallado, inténtalo otra vez.",
     erreurServeur: "El servidor ha respondido con un error ({statut}).",
@@ -229,6 +229,7 @@ export const es: Dictionnaire = {
     categorieInvalide: "Categoría no válida.",
     miseMinimale: "Puja mínima: {montant}.",
     logoHttps: "El enlace del logo debe ser una URL https.",
+    urlInvalide: "Esta dirección no es válida. Indica un dominio (misaas.com) o un @handle.",
     aucuneManche: "No hay ninguna ronda activa ahora mismo, inténtalo en un momento.",
     dejaMise: "Tu puja actual en este proyecto ya es de {montant}. Ofrece más para pujar por encima.",
     paiementImpossible: "No se ha podido iniciar el pago. Inténtalo en un momento.",

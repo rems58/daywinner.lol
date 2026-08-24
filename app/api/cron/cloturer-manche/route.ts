@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { timingSafeEqual } from "crypto";
 import { creerClientService } from "@/lib/supabase/server";
 import { prochaineCloture } from "@/lib/constantes";
 import { posterTweetChampion } from "@/lib/twitter";
@@ -57,12 +58,22 @@ async function purgerLogosOrphelins(
 // Appelée chaque minute par Vercel Cron (voir vercel.json). Idempotente :
 // si aucune manche n'a atteint sa fin, ne fait rien.
 async function gerer(request: Request) {
+  // Echec ferme : tant que le secret n'est pas configure, l'endpoint refuse
+  // de servir. La verification vivait auparavant dans un `if (secretAttendu)`,
+  // si bien qu'une variable oubliee au deploiement ouvrait a tout le monde une
+  // route qui ecrit avec la cle de service.
   const secretAttendu = process.env.CRON_SECRET;
-  if (secretAttendu) {
-    const autorisation = request.headers.get("authorization");
-    if (autorisation !== `Bearer ${secretAttendu}`) {
-      return NextResponse.json({ erreur: "Non autorisé." }, { status: 401 });
-    }
+  if (!secretAttendu) {
+    console.error("CRON_SECRET absent : clôture refusée.");
+    return NextResponse.json({ erreur: "Non configuré." }, { status: 503 });
+  }
+
+  const fourni = request.headers.get("authorization") ?? "";
+  const attendu = `Bearer ${secretAttendu}`;
+  const a = Buffer.from(fourni);
+  const b = Buffer.from(attendu);
+  if (a.length !== b.length || !timingSafeEqual(a, b)) {
+    return NextResponse.json({ erreur: "Non autorisé." }, { status: 401 });
   }
 
   const supabase = creerClientService();

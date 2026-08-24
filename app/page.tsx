@@ -6,7 +6,7 @@ import { TableauDeBord } from "@/components/tableau-de-bord";
 import { Navigation, PiedPage, TitreSection, ROUGE } from "@/components/habillage";
 import { Reveal } from "@/components/fx";
 import { BandeauPaiement } from "@/components/bandeau-paiement";
-import type { Manche, Entree } from "@/lib/types";
+import { COLONNES_ENTREE, type Manche, type Entree } from "@/lib/types";
 import { construireMeta } from "@/lib/seo";
 import { DonneesStructurees } from "@/components/donnees-structurees";
 import { SITE_NOM, urlAbsolue } from "@/lib/site";
@@ -37,7 +37,11 @@ export default async function Accueil({ searchParams }: PageProps<"/">) {
     .maybeSingle<Manche>();
 
   const { data: entries } = manche
-    ? await supabase.from("entries").select("*").eq("manche_id", manche.id).returns<Entree[]>()
+    ? await supabase
+        .from("entries")
+        .select(COLONNES_ENTREE)
+        .eq("manche_id", manche.id)
+        .returns<Entree[]>()
     : { data: [] as Entree[] };
 
   return (

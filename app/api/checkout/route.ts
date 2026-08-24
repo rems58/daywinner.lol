@@ -9,11 +9,13 @@ import {
   formaterMontant,
   logoUrlValide,
   normaliserUrl,
+  projectUrlValide,
   remplir,
 } from "@/lib/constantes";
 import type { CategorieCle } from "@/lib/i18n/dictionnaires/types";
 import { getDictionnaireLegal } from "@/lib/i18n/serveur-legal";
 import { CGV_VERSION } from "@/lib/cgv-version";
+import { SITE_URL } from "@/lib/site";
 
 /**
  * `managed_payments` est plus recent que les types du SDK (22.5.0), d'ou
@@ -50,6 +52,9 @@ export async function POST(request: Request) {
 
   if (!project_name || !project_url) {
     return NextResponse.json({ erreur: d.api.champsRequis }, { status: 400 });
+  }
+  if (!projectUrlValide(project_url)) {
+    return NextResponse.json({ erreur: d.api.urlInvalide }, { status: 400 });
   }
   if (!CATEGORIES.includes(category as CategorieCle)) {
     return NextResponse.json({ erreur: d.api.categorieInvalide }, { status: 400 });
@@ -113,7 +118,9 @@ export async function POST(request: Request) {
     );
   }
 
-  const origin = process.env.NEXT_PUBLIC_SITE_URL ?? new URL(request.url).origin;
+  // Origine figee cote serveur : la deduire de `request.url` la rendrait
+  // dependante de l'en-tete Host, donc influencable par l'appelant.
+  const origin = SITE_URL;
 
   // Une erreur Stripe non rattrapee renverrait une page HTML, que le client
   // n'arrive pas a lire : il afficherait "impossible de contacter le serveur"
