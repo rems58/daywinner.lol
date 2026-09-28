@@ -1,13 +1,39 @@
 # daywinner.lol
 
-Classement public payant qui repart de zéro chaque manche (~24h). On paie
-pour prendre la première place du jour ; n'importe qui peut surenchérir
-jusqu'à la clôture. Une mise dans les 2 dernières minutes prolonge la manche
-de 2 minutes (anti-snipe). Le champion de chaque manche est archivé dans le
-[Palmarès](/palmares).
+**Classement public payant, remis à zéro chaque jour.** On paie pour prendre la première
+place du jour, n'importe qui peut surenchérir jusqu'à la clôture de 21 h (heure de Paris).
+Une mise dans les 2 dernières minutes prolonge la manche de 2 minutes (anti-snipe).
+Le champion de chaque manche est archivé à vie dans le palmarès.
 
-Design porté à l'identique de [riveska.com](https://riveska.com) (tokens
-shadcn/ui neutral en oklch, police Geist, accent `#e8442e`).
+> **Statut : projet terminé.** Conçu, développé et mis en production seul en deux jours
+> (23 et 24 août 2026), paiements réels validés de bout en bout, puis arrêté volontairement
+> le 29 août 2026. Le site n'est plus en ligne ; les routes `/apercu` rejouent l'interface
+> avec des données fictives en local (voir plus bas).
+
+## Stack
+
+Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS v4 · shadcn/ui · Motion ·
+Supabase (Postgres, RLS, Realtime) · Stripe Checkout · Vercel
+
+## Points techniques
+
+- **Paiement Stripe de bout en bout** : Checkout, webhook à signature vérifiée,
+  **idempotent** (verrou posé avant toute écriture), journal des paiements, cumul des mises
+  d'un même joueur sur la manche.
+- **Logique temps réel** : clôture par cron à la minute (endpoint idempotent protégé par
+  secret), prolongation anti-snipe, présence en direct via Supabase Realtime.
+- **Sécurité** : RLS et cloisonnement des données, upload d'images borné (types, 2 Mo,
+  10 envois par heure et par IP hachée, nettoyage automatique des fichiers orphelins),
+  corrections issues d'une revue de sécurité dédiée.
+- **Conformité** : mentions légales, CGV versionnées, consentement horodaté et renoncement
+  au droit de rétractation conformes au droit français de la consommation.
+- **International et SEO** : 5 langues avec détection automatique, images Open Graph
+  générées dynamiquement, sitemap, données structurées.
+
+## Design
+
+Design porté à l'identique de riveska.com (tokens shadcn/ui neutral en oklch, police Geist,
+accent `#e8442e`).
 
 ## Mise en route
 
