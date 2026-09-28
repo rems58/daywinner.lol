@@ -5,6 +5,8 @@ place du jour, n'importe qui peut surenchérir jusqu'à la clôture de 21 h (heu
 Une mise dans les 2 dernières minutes prolonge la manche de 2 minutes (anti-snipe).
 Le champion de chaque manche est archivé à vie dans le palmarès.
 
+![Manche en cours, données fictives](docs/captures/daywinner-jour.png)
+
 > **Statut : projet terminé.** Conçu, développé et mis en production seul en deux jours
 > (23 et 24 août 2026), paiements réels validés de bout en bout, puis arrêté volontairement
 > le 29 août 2026. Le site n'est plus en ligne ; les routes `/apercu` rejouent l'interface
